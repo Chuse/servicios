@@ -1,21 +1,22 @@
 import requests
 import json
 import os
-from flask import Flask, jsonify, request
-# No necesitamos base64, ya que el último error demostró que la metadata no estaba codificada.
+from flask import Flask, jsonify, request, render_template
 
+# Inicialización de la aplicación Flask
 app = Flask(__name__)
 
 # --- CONFIGURACIÓN DE LA API DE KLEVER ---
-# Usamos el endpoint definitivo de Testnet que validamos
 KLEVER_SFT_ASSET_URL = "https://api.testnet.klever.org/v1.0/assets/sft/"
-# Asignamos un ID por defecto para pruebas si no se proporciona uno en la URL
 DEFAULT_ASSET_ID = "PUKR-30R2/1" 
+
+
+# --- LÓGICA DE LECTURA DE METADATA DESDE KLEVER CHAIN ---
 
 def get_project_metadata(asset_id: str):
     """
-    Consulta la API de Klever Chain para un activo SFT específico, extrae el 
-    JSON de configuración y lo devuelve como objeto Python.
+    Consulta la API de Klever para obtener la metadata del SFT.
+    Extrae la cadena JSON de los atributos y la parsea.
     """
     full_url = KLEVER_SFT_ASSET_URL + asset_id
     
@@ -24,57 +25,71 @@ def get_project_metadata(asset_id: str):
         response.raise_for_status()
         data = response.json()
         
-        # 1. Extraer la cadena JSON (el campo 'attributes' de la metadata)
-        # Ruta validada: data -> asset -> meta -> metadata -> attributes
+        # Navegación profunda para encontrar la cadena de metadata
         attributes_string = data.get('data', {}).get('asset', {}).get('meta', {}).get('metadata', {}).get('attributes', None)
         
         if not attributes_string:
-            # Si no se encuentra la metadata, se devuelve un error específico
             return None, "Metadata not found or asset ID is incorrect."
 
-        # 2. Parsear la cadena extraída como JSON
+        # Parsear la cadena JSON a un objeto Python
         project_config = json.loads(attributes_string)
-        
         return project_config, None
         
     except requests.exceptions.HTTPError as e:
         return None, f"HTTP Error: Asset not found or API error ({response.status_code})"
     except json.JSONDecodeError:
-        return None, "Critical Error: Metadata is not a valid JSON string."
+        return None, "Critical Error: Metadata is not a valid JSON string in the asset's attributes."
     except requests.exceptions.RequestException as e:
         return None, f"Connection Error: Could not connect to Klever API ({e})"
     except Exception as e:
         return None, f"Unexpected Error: {e}"
 
 
-# --- ENDPOINT DE LA API PARA EL FRONTEND ---
+# =================================================================
+# 1. RUTAS DEL FRONTEND (SIRVE ARCHIVOS HTML)
+# =================================================================
+
+@app.route('/')
+def index():
+    # Carga la página principal que lista los proyectos
+    return render_template('index.html')
+
+@app.route('/proyecto')
+def project_detail():
+    # Carga la página de detalle del proyecto
+    return render_template('proyecto.html')
+
+@app.route('/dashboard')
+def user_dashboard():
+    # Carga el Dashboard de usuario y sus recibos SFT
+    return render_template('dashboard.html')
+    
+@app.route('/configuracion')
+def user_configuration():
+    # Carga la página de configuración de alias/nombre
+    return render_template('configuracion.html')
+
+
+# =================================================================
+# 2. RUTAS DE LA API (ENDPOINTs DE DATOS)
+# =================================================================
 
 @app.route('/api/project', methods=['GET'])
 def project_api():
-    """
-    Endpoint principal para que el frontend obtenga los datos de un proyecto.
-    Uso: /api/project?id=PUKR-30R2/1
-    """
-    # 1. Obtener el ID del activo de los parámetros de la URL
+    """Endpoint para obtener la metadata de un proyecto SFT."""
     asset_id = request.args.get('id', DEFAULT_ASSET_ID)
-    
-    # 2. Llamar a la lógica de la blockchain
     metadata, error = get_project_metadata(asset_id)
     
-    # 3. Formatear la respuesta
     if error:
-        # Devolver el error 500 (Server Error) o 404 si el activo no existe
-        status_code = 500
-        if "not found" in error:
-            status_code = 404
-        
-        return jsonify({"success": False, "error": error}), status_code
+        return jsonify({"success": False, "error": error}), 404 if "not found" in error else 500
     
-    # Devolver el JSON limpio al frontend
     return jsonify({"success": True, "data": metadata})
 
 
-# --- Ejecución Local ---
+# =================================================================
+# 3. EJECUCIÓN
+# =================================================================
+
 if __name__ == '__main__':
-    # Usar el puerto 5000 para pruebas locales
+    # Ejecuta el servidor en modo debug
     app.run(debug=True, port=5000)
