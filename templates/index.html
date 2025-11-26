@@ -1,1 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Título de la página -->
+    <title>GlobalGive.io - Transparencia Total</title>
 
+    <!--
+    =================================================
+    Rutas de Archivos Estáticos (CSS)
+    ¡VERIFICAR ESTA RUTA! Debe existir el archivo en: static/css/soft-ui-dashboard.css
+    =================================================
+    -->
+
+    <!-- Incluir CSS de Soft UI Dashboard -->
+    <link href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" />
+    
+    <!-- Font Awesome Icons (Desde CDN) -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body class="index-page">
+
+    <!-- ========================================================= -->
+    <!-- CABECERA / NAVBAR (Contenido integrado aquí) -->
+    <!-- ========================================================= -->
+    <nav class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+        <div class="container-fluid pe-0">
+            <!-- Logo y Título Principal -->
+            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="/">
+                <i class="fas fa-globe me-2 text-info"></i> GlobalGive.io
+            </a>
+            
+            <!-- Botón de Menú (para móviles) -->
+            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon mt-2">
+                    <span class="navbar-toggler-bar bar1"></span>
+                    <span class="navbar-toggler-bar bar2"></span>
+                    <span class="navbar-toggler-bar bar3"></span>
+                </span>
+                <span class="sr-only">Toggle navigation</span>
+            </button>
+
+            <!-- Contenido de la Navegación -->
+            <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0" id="navigation">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center me-2 active" aria-current="page" href="/">
+                            <i class="fa fa-th-list opacity-6 me-1"></i>
+                            <span>Proyectos</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center me-2" href="/ranking">
+                            <i class="fa fa-trophy opacity-6 me-1"></i>
+                            <span>Ranking</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center me-2" href="/swap">
+                            <i class="fa fa-exchange-alt opacity-6 me-1"></i>
+                            <span>Intercambiar</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center me-2" href="/dashboard">
+                            <i class="fa fa-user opacity-6 me-1"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Elemento de la Derecha: Conexión de Wallet -->
+                <ul class="navbar-nav d-lg-block d-none">
+                    <li class="nav-item d-flex align-items-center me-3">
+                        <button class="btn btn-sm bg-gradient-info mb-0 d-none d-lg-block">Conectar Wallet</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- End Navbar -->
+
+    <!-- Contenido Principal - Sección Hero -->
+    <header class="header-2">
+        <!-- RUTA DE IMAGEN DE FONDO CORREGIDA -->
+        <!-- ¡VERIFICAR ESTA RUTA! Debe existir el archivo en: static/img/curved-images/curved1.jpg -->
+        <div class="page-header min-vh-75" style="background-image: url('{{ url_for('static', filename='img/curved-images/curved1.jpg') }}')">
+            <span class="mask bg-gradient-dark opacity-6"></span>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 text-center mx-auto">
+                        <h1 class="text-white pt-3 mt-n5">Transparencia Total en Donaciones e Inversiones</h1>
+                        <p class="lead text-white mt-3">Explora proyectos auditables en tiempo real en KleverChain. Donde cada transacción importa y es visible.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección de Proyectos (Parte inferior) -->
+    <section class="pb-5 position-relative bg-white mt-n10">
+        <div class="container">
+            <!-- PESTAÑAS DE FILTRO (Placeholder) -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="nav-wrapper position-relative z-index-2">
+                        <ul class="nav nav-pills nav-fill flex-row p-1" id="tabs-text" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center active" data-bs-toggle="tab" href="#tabs-humanitario" role="tab" aria-controls="tabs-humanitario" aria-selected="true">
+                                    <i class="fa fa-hand-holding-heart text-sm me-2"></i> Humanitarios
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center" data-bs-toggle="tab" href="#tabs-inversion" role="tab" aria-controls="tabs-inversion" aria-selected="false">
+                                    <i class="fa fa-coins text-sm me-2"></i> Inversión / Comercial
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENIDO DE LAS TARJETAS DE PROYECTOS (PLACEHOLDER) -->
+            <div class="tab-content" id="tabs-content">
+                <div class="tab-pane fade show active" id="tabs-humanitario" role="tabpanel" aria-labelledby="tabs-humanitario-tab">
+                    <div class="row mt-4" id="humanitarian-projects-container">
+                        <div class="col-md-6 col-lg-4 mb-4">
+                             <div class="card card-plain bg-white shadow-lg">
+                                <div class="card-body text-center">
+                                    <h4 class="font-weight-bolder">Proyecto de Prueba</h4>
+                                    <p class="text-secondary">Si ves esta tarjeta con bordes y sombra, el CSS está funcionando.</p>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="tabs-inversion" role="tabpanel" aria-labelledby="tabs-inversion-tab">
+                    <div class="row mt-4" id="investment-projects-container">
+                        <div class="col-md-12 text-center mt-5">
+                            <i class="fa fa-cogs fa-3x text-info mb-3"></i>
+                            <h5 class="text-secondary">No hay proyectos de inversión disponibles por el momento.</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--
+    =================================================
+    Scripts Esenciales (JavaScript)
+    =================================================
+    -->
+    <!-- Core JS de Soft UI -->
+    <!-- ¡VERIFICAR ESTAS RUTAS! Deben existir en static/js/core/ -->
+    <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
+    
+    <!-- Script de Placeholder i18n.js -->
+    <!-- ¡VERIFICAR ESTA RUTA! Debe existir en static/js/i18n.js -->
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+
+</body>
+</html>
