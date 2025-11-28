@@ -238,116 +238,125 @@
     <script src="{{ url_for('static', filename='js/soft-design-system.js') }}"></script>
 
     <script>
-// Función para mostrar mensajes de forma segura (sin usar alert/confirm)
-function showMessage(title, message, type = 'info') {
-    const messageContainer = document.getElementById('messageContainer');
-    if (!messageContainer) return;
+/**
+ * Archivo: wallet_connection.js
+ * Descripción: Función robusta para conectar a Klever Wallet,
+ * lidiando con problemas de temporización y de extensión.
+ */
 
-    // Limpia mensajes anteriores si hay demasiados (para no sobrecargar la UI)
-    while (messageContainer.children.length > 5) {
-        messageContainer.removeChild(messageContainer.lastChild);
+const MAX_RETRIES = 5;
+const RETRY_DELAY_MS = 500;
+const WALLET_CONNECTED_CLASS = 'wallet-connected';
+
+/**
+ * Espera de forma asíncrona hasta que el objeto window.kleverWeb esté disponible.
+ * Esto ayuda a prevenir el 'TypeError: ...is not a function' que ocurre por problemas de tiempo de carga.
+ * @returns {Promise<boolean>} Devuelve true si la billetera es detectada, false en caso contrario.
+ */
+async function waitForKleverWeb() {
+    for (let i = 0; i < MAX_RETRIES; i++) {
+        // La extensión inyecta primero window.kleverWeb, y luego sus métodos.
+        // Verificamos si existe el objeto.
+        if (window.kleverWeb) {
+            console.log('[KleverChain] Extensión Klever detectada tras espera.');
+            return true;
+        }
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
     }
+    console.warn('[KleverChain] La extensión Klever no fue detectada tras varios intentos.');
+    return false;
+}
 
-    const alertHtml = `
-        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-            <span class="alert-icon"><i class="ni ni-like-2"></i></span>
-            <span class="alert-text"><strong>${title}:</strong> ${message}</span>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    `;
-    // Insertar el mensaje al inicio del contenedor
-    messageContainer.insertAdjacentHTML('afterbegin', alertHtml);
+/**
+ * Intenta conectar a la Klever Wallet.
+ */
+async function connectKleverWallet() {
+    // Es importante tener un botón con este ID en tu HTML: <button id="connect-wallet-btn">Conectar Wallet</button>
+    const connectButton = document.getElementById('connect-wallet-btn');
+
+    try {
+        // 1. Verificar y esperar por el objeto kleverWeb
+        if (!await waitForKleverWeb()) {
+            displayStatus('Error: Extensión Klever Wallet no instalada. Por favor, instálala o habilítala.', 'error');
+            return;
+        }
+
+        // 2. Llamar al método getAccounts (asumiendo que esta es la API correcta)
+        displayStatus('Intentando conectar a Klever Wallet...', 'info');
+        
+        // El método getAccounts abrirá una ventana emergente en la extensión.
+        const accounts = await window.kleverWeb.getAccounts();
+
+        if (accounts && accounts.length > 0) {
+            const walletAddress = accounts[0];
+            displayStatus(`Conectado con éxito! Dirección: ${walletAddress.substring(0, 10)}...`, 'success');
+            
+            // Actualizar UI del botón
+            connectButton.textContent = 'Billetera Conectada';
+            connectButton.classList.add(WALLET_CONNECTED_CLASS);
+            connectButton.disabled = true;
+
+            console.log('[KleverChain] Conexión exitosa. Cuentas:', accounts);
+        } else {
+            displayStatus('Conexión fallida: No se seleccionó ninguna cuenta en la billetera.', 'error');
+        }
+
+    } catch (error) {
+        // Capturar y mostrar errores de conexión o de la API de la extensión
+        if (error instanceof TypeError && error.message.includes('getAccounts is not a function')) {
+            displayStatus('Error Grave de API: El método getAccounts no está disponible. Verifique la versión de su SDK Klever.', 'error');
+        } else {
+            displayStatus(`Error al conectar la Wallet: ${error.message}`, 'error');
+        }
+        console.error('[KleverChain] Error al conectar la Wallet:', error);
+    }
+}
+
+/**
+ * Función utilitaria para mostrar el estado de la conexión en la UI.
+ * @param {string} message - El mensaje a mostrar.
+ * @param {('info'|'success'|'error')} type - El tipo de mensaje para aplicar estilos.
+ */
+function displayStatus(message, type) {
+    // Crea o usa un elemento de estado para mostrar mensajes sin usar 'alert()'
+    const statusEl = document.getElementById('connection-status') || document.createElement('div');
+    if (!statusEl.id) {
+        statusEl.id = 'connection-status';
+        statusEl.style.marginTop = '15px';
+        statusEl.style.padding = '10px';
+        statusEl.style.borderRadius = '5px';
+        statusEl.style.textAlign = 'center';
+        // Añade el elemento al cuerpo del documento si no existía (ejemplo básico)
+        document.body.appendChild(statusEl); 
+    }
+    statusEl.textContent = message;
     
-    // Eliminar el mensaje después de 5 segundos
-    setTimeout(() => {
-        const alertElement = messageContainer.querySelector('.alert');
-        if (alertElement) {
-            alertElement.remove();
-        }
-    }, 5000);
-}
-
-// Función auxiliar para actualizar el estado del botón después de conectar
-function updateWalletDisplay(walletAddress, walletDisplay) {
-    const truncatedAddress = walletAddress.substring(0, 4) + '...' + walletAddress.substring(walletAddress.length - 4);
-    walletDisplay.innerHTML = `<i class="fa fa-wallet me-1"></i> ${truncatedAddress}`;
-    walletDisplay.classList.remove('bg-gradient-info');
-    walletDisplay.classList.add('bg-gradient-success');
-    walletDisplay.disabled = true; // Deshabilitar después de conectar
-    return walletAddress;
-}
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    const connectWalletBtn = document.getElementById('connectWalletBtn');
-    const walletDisplay = connectWalletBtn; 
-    let walletAddress = null; 
-
-    // =========================================================
-    // LÓGICA DE CONEXIÓN DE KLEVERCHAIN (Klever Wallet Extension)
-    // =========================================================
-
-    /**
-     * Intenta conectar la Klever Wallet o detecta si ya está conectada.
-     * @param {boolean} silent Si es true, no muestra mensajes de éxito/error si no es necesaria la interacción.
-     */
-    async function connectKleverWallet(silent = false) {
-        // LOG DE DEPURACIÓN: Confirmar que la función se ejecuta.
-        console.log(`[KleverChain] Intentando conexión. Modo Silencioso: ${silent}`); 
-
-        if (typeof window.kleverWeb === 'undefined') {
-            if (!silent) {
-                showMessage("Error de Conexión", "La extensión Klever Wallet no está instalada.", "danger");
-            }
-            console.error("[KleverChain] window.kleverWeb no está definido. Extensión no instalada.");
-            return null;
-        }
-
-        try {
-            if (!silent) {
-                showMessage("Conexión en curso", "Esperando la aprobación de Klever Wallet...", "warning");
-            }
-            
-            // Usar getAccounts() para obtener las direcciones de la wallet conectada.
-            const accounts = await window.kleverWeb.getAccounts();
-            
-            if (accounts.length > 0) {
-                walletAddress = updateWalletDisplay(accounts[0].address, walletDisplay);
-                if (!silent) {
-                    showMessage("Conexión Exitosa", `Wallet conectada: ${walletAddress.substring(0, 4)}...`, "success");
-                }
-                console.log("[KleverChain] Conexión exitosa. Dirección:", walletAddress);
-                return walletAddress;
-
-            } else {
-                if (!silent) {
-                    showMessage("Conexión Cancelada", "El usuario no seleccionó una cuenta o canceló la conexión.", "secondary");
-                }
-                console.warn("[KleverChain] Conexión cancelada por el usuario o no hay cuentas disponibles.");
-                return null;
-            }
-
-        } catch (error) {
-            console.error("[KleverChain] Error grave al conectar la Wallet:", error);
-            if (!silent) {
-                showMessage("Error de Conexión", "Ocurrió un error durante la conexión. Inténtelo de nuevo.", "danger");
-            }
-            return null;
-        }
+    // Cores básicas para o status
+    switch(type) {
+        case 'success':
+            statusEl.style.backgroundColor = '#d4edda';
+            statusEl.style.color = '#155724';
+            break;
+        case 'error':
+            statusEl.style.backgroundColor = '#f8d7da';
+            statusEl.style.color = '#721c24';
+            break;
+        case 'info':
+        default:
+            statusEl.style.backgroundColor = '#fff3cd';
+            statusEl.style.color = '#856404';
+            break;
     }
+}
 
-    // 1. Verificar la conexión al cargar la página (Modificación para UX)
-    // Intentamos conectar silenciosamente. Si ya había una cuenta autorizada, se conecta.
-    connectKleverWallet(true); 
-
-    // 2. Conectar al hacer clic en el botón
-    connectWalletBtn.addEventListener('click', () => {
-        console.log("[KleverChain] Botón 'Conectar Wallet' pulsado.");
-        connectKleverWallet(false);
-    });
-});
-        </script>
+// Configurar el listener para el botón
+window.onload = function() {
+    const connectButton = document.getElementById('connect-wallet-btn');
+    if (connectButton) {
+        connectButton.addEventListener('click', connectKleverWallet);
+    } else {
+        console.error("Botón 'connect-wallet-btn' no encontrado. Asegúrate de incluirlo en tu HTML.");
+    }
+};        </script>
 </body>
 </html>
