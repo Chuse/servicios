@@ -1,362 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <!-- Título de la página -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GlobalGive.io - Proyectos de Transparencia</title>
-
-    <!--
-    =================================================
-    1. FUENTES y ESTILOS (Rutas Confirmadas: Soft Design System)
-    =================================================
-    -->
     
-    <!-- 1.1 Fuente Google (Open Sans para tipografía de Soft UI) -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <!-- 1. Estilos de Soft UI / Bootstrap (Asegúrate de que tus rutas sean correctas) -->
+    <!-- EJEMPLO: -->
+    <!-- <link href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" /> -->
     
-    <!-- 1.2 Nucleo Icons (Necesario para los iconos de la plantilla) -->
-    <link href="{{ url_for('static', filename='css/nucleo-icons.css') }}" rel="stylesheet" />
-
-    <!-- 1.3 Incluir CSS de Soft Design System (CONFIRMADO: soft-design-system.min.css) -->
-    <link href="{{ url_for('static', filename='css/soft-design-system.min.css') }}" rel="stylesheet" />
+    <!-- Incluye Font Awesome para los iconos (si lo estás usando) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <!-- 1.4 Font Awesome Icons (FIX: Usando CDN pública para evitar el 403 Forbidden) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-
-    <!-- Estilos personalizados para el contenedor central (Similar al diseño de la imagen) -->
-    <style>
-        .main-container {
-            max-width: 1200px; /* Ancho máximo para el contenido central */
-            margin: 0 auto; /* Centrar horizontalmente */
-            padding: 20px;
-        }
-    </style>
-
 </head>
+<body class="g-sidenav-show  bg-gray-100">
 
-<body class="g-sidenav-show bg-gray-100">
+    <!-- 2. INCLUIR LA CABECERA (Aquí se carga el botón con el ID) -->
+    {% include 'sections/header.html' %}
 
-    <!-- ========================================================= -->
-    <!-- CABECERA / NAVBAR (Diseño limpio y compacto, centrado) -->
-    <!-- ========================================================= -->
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
-        <div class="container-fluid py-1 px-3">
-            <!-- Logo y Título Principal -->
-            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3" href="/">
-                <i class="fas fa-globe me-2 text-info"></i> GlobalGive.io
-            </a>
-
-            <!-- Contenido de la Navegación Centrado (Simulando el diseño de la imagen) -->
-            <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4 justify-content-center" id="navigation">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item px-3 d-flex align-items-center">
-                        <a href="/" class="nav-link text-body font-weight-bold p-0">
-                            Proyectos
-                        </a>
-                    </li>
-                    <li class="nav-item px-3 d-flex align-items-center">
-                        <a href="/dashboard" class="nav-link text-body font-weight-bold p-0">
-                            Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item px-3 d-flex align-items-center">
-                        <a href="/swap" class="nav-link text-body font-weight-bold p-0">
-                            Swap
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Elementos de la Derecha: Banderas (Placeholder) y Botón -->
-            <ul class="navbar-nav d-flex align-items-center">
-                 <!-- Banderas (Placeholder basado en la imagen) -->
-                <li class="nav-item dropdown d-flex align-items-center me-3">
-                    <a href="javascript:;" class="nav-link text-body p-0 me-2" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fas fa-flag text-sm"></i>
-                    </a>
-                </li>
-                
-                <!-- Conectar Wallet Botón -->
-                <li class="nav-item d-flex align-items-center">
-                    <button class="btn bg-gradient-info mb-0" id="connect-wallet-btn">Conectar Wallet</button>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <!-- End Navbar -->
-
-    <!-- ========================================================= -->
-    <!-- CONTENIDO PRINCIPAL (Replicando la estructura de la imagen) -->
-    <!-- ========================================================= -->
-    <div class="main-container">
+    <main class="main-content position-relative max-height-vh-100 h-100 mt-0 border-radius-lg ">
         
-        <!-- Título Principal de la Sección -->
-        <h2 class="font-weight-bolder mb-4 text-dark">GlobalGive.io - Proyectos de Transparencia</h2>
-
-        <!-- Tabs de Filtro (Replicando el diseño simple de la imagen) -->
-        <div class="nav-wrapper position-relative z-index-2 mb-4">
-            <ul class="nav nav-pills nav-fill flex-row p-1 bg-transparent" id="tabs-text" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center active bg-gradient-info text-white me-2" data-bs-toggle="tab" href="#tabs-humanitario" role="tab" aria-controls="tabs-humanitario" aria-selected="true">
-                        Proyectos Humanitarios
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center text-dark" data-bs-toggle="tab" href="#tabs-otros" role="tab" aria-controls="tabs-otros" aria-selected="false">
-                        Otros Proyectos
-                    </a>
-                </li>
-            </ul>
-        </div>
-        
-        <!-- Contenido de Proyectos (Grid 3x2, replicando la imagen) -->
-        <div class="tab-content" id="tabs-content">
-            <div class="tab-pane fade show active" id="tabs-humanitario" role="tabpanel" aria-labelledby="tabs-humanitario-tab">
-                <div class="row mt-4" id="humanitarian-projects-container">
-                    
-                    <!-- Tarjeta de Proyecto 1: Humanitario (Placeholder con imagen) -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-lg">
-                            <img class="card-img-top" src="{{ url_for('static', filename='img/curved-images/curved1.jpg') }}" alt="Imagen de Proyecto" style="height: 200px; object-fit: cover;">
-                            <div class="card-body p-3">
-                                <span class="badge bg-gradient-danger mb-2">Donaciones</span>
-                                <h5 class="font-weight-bolder">Proyectos Humanitarios</h5>
-                                <p class="text-sm text-secondary">20% completado</p>
-                                <!-- Barra de progreso (Placeholder) -->
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tarjeta de Proyecto 2: Biomas (Placeholder con imagen) -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-lg">
-                            <img class="card-img-top" src="{{ url_for('static', filename='img/curved-images/curved2.jpg') }}" alt="Imagen de Proyecto" style="height: 200px; object-fit: cover;">
-                            <div class="card-body p-3">
-                                <span class="badge bg-gradient-warning mb-2">Social</span>
-                                <h5 class="font-weight-bolder">Proyectos Biomas</h5>
-                                <p class="text-sm text-secondary">20% completado</p>
-                                <!-- Barra de progreso (Placeholder) -->
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tarjeta de Proyecto 3: Ecosistemas (Placeholder con imagen) -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-lg">
-                            <img class="card-img-top" src="{{ url_for('static', filename='img/curved-images/curved3.jpg') }}" alt="Imagen de Proyecto" style="height: 200px; object-fit: cover;">
-                            <div class="card-body p-3">
-                                <span class="badge bg-gradient-info mb-2">Ambiental</span>
-                                <h5 class="font-weight-bolder">Proyectos Ecosistemas</h5>
-                                <p class="text-sm text-secondary">26% completado</p>
-                                <!-- Barra de progreso (Placeholder) -->
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 26%" aria-valuenow="26" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tarjeta de Proyecto 4: Energía Solar -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-lg">
-                                <img class="card-img-top" src="https://placehold.co/600x200/4CAF50/white?text=Energia+Solar" alt="Paneles solares" style="height: 200px; object-fit: cover;">                            <div class="card-body p-3">
-                                <span class="badge bg-gradient-success mb-2">Inversión</span>
-                                <h5 class="font-weight-bolder">Inversión en Energía Solar</h5>
-                                <p class="text-sm text-secondary">95% completado</p>
-                                <!-- Barra de progreso (Placeholder) -->
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tarjeta de Proyecto 5: Teses Daire Chead -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-lg">
-                            <img class="card-img-top" src="{{ url_for('static', filename='img/curved-images/curved5.jpg') }}" alt="Imagen de Proyecto" style="height: 200px; object-fit: cover;">
-                            <div class="card-body p-3">
-                                <span class="badge bg-gradient-secondary mb-2">Tecnología</span>
-                                <h5 class="font-weight-bolder">Teses Daire Chead</h5>
-                                <p class="text-sm text-secondary">30% completado</p>
-                                <!-- Barra de progreso (Placeholder) -->
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tarjeta de Proyecto 6: Granja Orgánica -->
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-lg">
-                            <img class="card-img-top" src="{{ url_for('static', filename='img/curved-images/curved6.jpg') }}" alt="Imagen de Proyecto" style="height: 200px; object-fit: cover;">
-                            <div class="card-body p-3">
-                                <span class="badge bg-gradient-success mb-2">Agrícola</span>
-                                <h5 class="font-weight-bolder">Granja Orgánica</h5>
-                                <p class="text-sm text-secondary">60% completado</p>
-                                <!-- Barra de progreso (Placeholder) -->
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar bg-gradient-success" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
+        <!-- SECCIÓN HERO -->
+        <section class="min-vh-75 position-relative bg-cover" style="background-image: url('{{ url_for('static', filename='img/background_placeholder.jpg') }}'); background-position: center;">
+            <span class="mask bg-gradient-dark opacity-6"></span>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8 text-center mx-auto">
+                        <div class="text-white mt-8 mb-5">
+                            <h1 class="font-weight-bolder text-white">Transparencia Total en Donaciones e Inversiones</h1>
+                            <p class="lead mt-3 mb-0">Explora proyectos auditables en tiempo real en KleverChain. Donde cada transacción importa y es visible.</p>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="tab-pane fade" id="tabs-otros" role="tabpanel" aria-labelledby="tabs-otros-tab">
-                <div class="row mt-4">
-                    <div class="col-md-12 text-center mt-5">
-                        <i class="fa fa-cogs fa-3x text-info mb-3"></i>
-                        <h5 class="text-secondary">No hay proyectos de inversión disponibles por el momento.</h5>
+            <!-- Contenido Principal: Ejemplo de Proyectos -->
+            <div class="container mt-n6">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card p-4 shadow-lg text-center">
+                            <h2 class="h5 mb-3">Integración de Billetera Exitosa</h2>
+                            <p class="text-muted mb-0">La lógica de conexión está cargada. Por favor, haz clic en el botón **"Conectar Wallet"** en la barra de navegación superior para abrir el pop-up de Klever Wallet y verificar la conexión en tu consola.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Aquí iría el resto del contenido de tu página (footer, etc.) -->
         
-    </div> <!-- Cierre main-container -->
+    </main>
 
-    <!--
-    =================================================
-    2. SCRIPTS ESENCIALES (JavaScript - Rutas Confirmadas con 'core/')
-    =================================================
-    -->
-    <!-- Popper y Bootstrap están dentro de la subcarpeta 'core/' -->
-    <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
-
-    <!-- Script Principal de Soft Design System -->
-    <script src="{{ url_for('static', filename='js/soft-design-system.js') }}"></script>
-
-    <script>
-/**
- * Archivo: wallet_connection.js
- * Descripción: Función robusta para conectar a Klever Wallet,
- * lidiando con problemas de temporización y de extensión.
- */
-
-const MAX_RETRIES = 5;
-const RETRY_DELAY_MS = 500;
-const WALLET_CONNECTED_CLASS = 'wallet-connected';
-
-/**
- * Espera de forma asíncrona hasta que el objeto window.kleverWeb esté disponible.
- * Esto ayuda a prevenir el 'TypeError: ...is not a function' que ocurre por problemas de tiempo de carga.
- * @returns {Promise<boolean>} Devuelve true si la billetera es detectada, false en caso contrario.
- */
-async function waitForKleverWeb() {
-    for (let i = 0; i < MAX_RETRIES; i++) {
-        // La extensión inyecta primero window.kleverWeb, y luego sus métodos.
-        // Verificamos si existe el objeto.
-        if (window.kleverWeb) {
-            console.log('[KleverChain] Extensión Klever detectada tras espera.');
-            return true;
-        }
-        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
-    }
-    console.warn('[KleverChain] La extensión Klever no fue detectada tras varios intentos.');
-    return false;
-}
-
-/**
- * Intenta conectar a la Klever Wallet.
- */
-async function connectKleverWallet() {
-    // Es importante tener un botón con este ID en tu HTML: <button id="connect-wallet-btn">Conectar Wallet</button>
-    const connectButton = document.getElementById('connect-wallet-btn');
-
-    try {
-        // 1. Verificar y esperar por el objeto kleverWeb
-        if (!await waitForKleverWeb()) {
-            displayStatus('Error: Extensión Klever Wallet no instalada. Por favor, instálala o habilítala.', 'error');
-            return;
-        }
-
-        // 2. Llamar al método getAccounts (asumiendo que esta es la API correcta)
-        displayStatus('Intentando conectar a Klever Wallet...', 'info');
-        
-        // El método getAccounts abrirá una ventana emergente en la extensión.
-        const accounts = await window.kleverWeb.getAccounts();
-
-        if (accounts && accounts.length > 0) {
-            const walletAddress = accounts[0];
-            displayStatus(`Conectado con éxito! Dirección: ${walletAddress.substring(0, 10)}...`, 'success');
-            
-            // Actualizar UI del botón
-            connectButton.textContent = 'Billetera Conectada';
-            connectButton.classList.add(WALLET_CONNECTED_CLASS);
-            connectButton.disabled = true;
-
-            console.log('[KleverChain] Conexión exitosa. Cuentas:', accounts);
-        } else {
-            displayStatus('Conexión fallida: No se seleccionó ninguna cuenta en la billetera.', 'error');
-        }
-
-    } catch (error) {
-        // Capturar y mostrar errores de conexión o de la API de la extensión
-        if (error instanceof TypeError && error.message.includes('getAccounts is not a function')) {
-            displayStatus('Error Grave de API: El método getAccounts no está disponible. Verifique la versión de su SDK Klever.', 'error');
-        } else {
-            displayStatus(`Error al conectar la Wallet: ${error.message}`, 'error');
-        }
-        console.error('[KleverChain] Error al conectar la Wallet:', error);
-    }
-}
-
-/**
- * Función utilitaria para mostrar el estado de la conexión en la UI.
- * @param {string} message - El mensaje a mostrar.
- * @param {('info'|'success'|'error')} type - El tipo de mensaje para aplicar estilos.
- */
-function displayStatus(message, type) {
-    // Crea o usa un elemento de estado para mostrar mensajes sin usar 'alert()'
-    const statusEl = document.getElementById('connection-status') || document.createElement('div');
-    if (!statusEl.id) {
-        statusEl.id = 'connection-status';
-        statusEl.style.marginTop = '15px';
-        statusEl.style.padding = '10px';
-        statusEl.style.borderRadius = '5px';
-        statusEl.style.textAlign = 'center';
-        // Añade el elemento al cuerpo del documento si no existía (ejemplo básico)
-        document.body.appendChild(statusEl); 
-    }
-    statusEl.textContent = message;
+    <!-- 3. Scripts de Bootstrap/Soft UI (CRÍTICO: deben cargarse primero) -->
+    <!-- EJEMPLO: -->
+    <!-- <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script> -->
+    <!-- <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script> -->
     
-    // Cores básicas para o status
-    switch(type) {
-        case 'success':
-            statusEl.style.backgroundColor = '#d4edda';
-            statusEl.style.color = '#155724';
-            break;
-        case 'error':
-            statusEl.style.backgroundColor = '#f8d7da';
-            statusEl.style.color = '#721c24';
-            break;
-        case 'info':
-        default:
-            statusEl.style.backgroundColor = '#fff3cd';
-            statusEl.style.color = '#856404';
-            break;
-    }
-}
+    <!-- 4. Script de Conexión de Wallet (ESTE ES EL ARCHIVO 2 QUE GESTIONA LA LÓGICA) -->
+    <script src="{{ url_for('static', filename='js/wallet_connector.js') }}"></script>
 
-// Configurar el listener para el botón
-window.onload = function() {
-    const connectButton = document.getElementById('connect-wallet-btn');
-    if (connectButton) {
-        connectButton.addEventListener('click', connectKleverWallet);
-    } else {
-        console.error("Botón 'connect-wallet-btn' no encontrado. Asegúrate de incluirlo en tu HTML.");
-    }
-};        </script>
 </body>
 </html>
