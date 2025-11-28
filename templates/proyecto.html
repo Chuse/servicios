@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Klever Wallet - Prueba de Conexión</title>
+    <!-- === SOLUCIÓN CSP: Permite scripts en línea y eval para que Tailwind CDN funcione === -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; object-src 'none';">
+    <!-- ================================================================================= -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Estilos básicos para el estado */
@@ -20,7 +23,7 @@
         
         <!-- Mensaje de Diagnóstico Aclaratorio -->
         <div class="p-3 mb-6 bg-yellow-100 text-yellow-800 rounded-lg text-xs border border-yellow-300">
-            <strong>NOTA IMPORTANTE:</strong> Si esta página muestra un error de "Extensión Klever no encontrada" en la consola, se debe a que las extensiones no cargan en entornos de previsualización (sandboxes). Por favor, pruébalo en un servidor web real (como `localhost` o tu dominio de Render).
+            <strong>NOTA IMPORTANTE:</strong> Hemos añadido una Política de Seguridad (CSP) permisiva. Si la conexión a Klever falla, el problema es que la extensión no carga en el entorno de Render, y debes probarlo en un servidor local (`localhost`).
         </div>
         
         <h1 class="text-3xl font-bold mb-6 text-gray-800">Prueba de Conexión KleverChain</h1>
