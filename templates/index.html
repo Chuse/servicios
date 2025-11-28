@@ -8,11 +8,50 @@
     <!-- FUENTES: Carga la fuente principal (Open Sans) -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     
-    <!-- Iconos: Font Awesome (Necesario para los iconos) -->
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- ESTILOS BÁSICOS DE BOOTSTRAP 5 (Base de Soft UI) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- ESTILOS PRINCIPALES DE SOFT UI -->
-    <link id="pagestyle" href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" />
+    <!-- Iconos: Font Awesome (CDN corregido, reemplazando el 403) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CSS EMBEBIDO PARA LOS COLORES DE SOFT UI Y CLASES DE DASHBOARD FALTANTES -->
+    <style>
+        .g-sidenav-show {
+            overflow-x: hidden;
+        }
+        .bg-gray-100 {
+            background-color: #f8f9fa !important;
+        }
+        .bg-gradient-dark {
+            background-image: linear-gradient(310deg, #1c1c1c, #313131);
+        }
+        .text-gradient.text-primary {
+            background-image: linear-gradient(310deg, #4953f5, #1c1c1c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .bg-gradient-success {
+            background-image: linear-gradient(310deg, #17ad37, #98ec2d);
+        }
+        .bg-gradient-info {
+            background-image: linear-gradient(310deg, #2152ff, #21d4fd);
+        }
+        .card {
+            box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05);
+            border-radius: 0.75rem;
+        }
+        /* Estilo para la tarjeta "Conexión Exitosa" flotando */
+        .mt-n6 {
+            margin-top: -3rem !important; /* Ajuste manual para que flote bien */
+            z-index: 10;
+            position: relative;
+        }
+        /* Efecto de movimiento en enlaces */
+        .icon-move-right:hover i {
+            transform: translateX(5px);
+            transition: transform 0.2s;
+        }
+    </style>
     
 </head>
 <body class="g-sidenav-show  bg-gray-100">
@@ -25,15 +64,15 @@
         <!-- ========================================================= -->
         <!-- SECCIÓN 1: HERO y Mensaje de Conexión -->
         <!-- ========================================================= -->
-        <section class="min-vh-75 position-relative bg-cover" style="background-image: url('{{ url_for('static', filename='img/background_placeholder.jpg') }}'); background-position: center;">
-            <!-- MÁSCARA (Asegura contraste de texto) -->
-            <span class="mask bg-gradient-dark opacity-6"></span>
+        <section class="min-vh-75 position-relative bg-cover" style="background-image: linear-gradient(to right top, #2152ff, #1c1c1c); background-position: center;">
+            <!-- MÁSCARA (Asegura contraste de texto) - Usando opacity de Bootstrap -->
+            <span class="mask bg-gradient-dark opacity-6 position-absolute top-0 start-0 w-100 h-100"></span>
             
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-8 text-center mx-auto">
-                        <div class="text-white mt-8 mb-5">
-                            <h1 class="font-weight-bolder text-white">Transparencia Total en Donaciones e Inversiones</h1>
+                        <div class="text-white mt-8 mb-5 pt-5">
+                            <h1 class="font-weight-bolder text-white pt-5">Transparencia Total en Donaciones e Inversiones</h1>
                             <p class="lead mt-3 mb-0">Explora proyectos auditables en tiempo real en KleverChain. Donde cada transacción importa y es visible.</p>
                         </div>
                     </div>
@@ -141,17 +180,13 @@
     <!-- ============================================== -->
     <!-- Popper.js y Bootstrap JS (core) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     
-    <!-- Perfect Scrollbar y Smooth Scrollbar (Plugins de Soft UI) -->
+    <!-- Scripts de Scroll (Plugins de Soft UI) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.5/perfect-scrollbar.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scrollbar/8.7.5/smooth-scrollbar.min.js"></script>
     
-    <!-- SCRIPT DEL DASHBOARD (Debe estar en tu servidor, si lo tienes) -->
-    <!-- Si este archivo no existe en static/js/, verás un error 404 en la consola. -->
-    <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js') }}"></script>
-    
-    <!-- SCRIPT DE CONEXIÓN DE WALLET -->
+    <!-- SCRIPT DE CONEXIÓN DE WALLET (¡Nuestro script!) -->
     <script src="{{ url_for('static', filename='js/wallet_connector.js') }}"></script>
 
 </body>
