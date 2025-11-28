@@ -7,6 +7,38 @@
 const MAX_RETRIES = 5; 
 const RETRY_DELAY_MS = 300;
 const WALLET_CONNECTED_CLASS = 'wallet-connected'; // Clase CSS para indicar estado conectado
+const BACKEND_CONNECT_URL = '/api/user/connect'; // Ruta de Flask para recibir la dirección
+
+/**
+ * Envía la dirección de la billetera al backend de Flask.
+ * @param {string} address La dirección de la billetera Klever.
+ */
+async function sendAddressToBackend(address) {
+    try {
+        console.log(`[Backend] Enviando dirección ${address} a Flask...`);
+        
+        const response = await fetch(BACKEND_CONNECT_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ address: address })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            console.log('[Backend] Respuesta exitosa:', result.message);
+            // Aquí podrías actualizar la UI con datos cargados del usuario
+        } else {
+            console.error('[Backend] Error del servidor:', result.message);
+        }
+
+    } catch (error) {
+        console.error('[Backend] Fallo al comunicarse con el servidor:', error);
+    }
+}
+
 
 /**
  * Función robusta para esperar que el objeto kleverWeb esté disponible.
@@ -64,10 +96,9 @@ async function connectKleverWallet() {
             throw new Error("Klever Extension not found. Por favor, asegúrate de que esté instalada y desbloqueada.");
         }
 
-        // 2. Ejecutar la inicialización (esto abre el pop-up y ACTIVA el provider)
+        // 2. Ejecutar la inicialización (esto abre el pop-up)
         console.log('Solicitando inicialización de Klever Wallet...');
         await window.kleverWeb.initialize();
-        // ESTE ES EL PASO CRÍTICO QUE HABILITA getWalletAddress()
 
         // 3. Obtener la dirección
         const address = window.kleverWeb.getWalletAddress();
@@ -76,9 +107,12 @@ async function connectKleverWallet() {
             throw new Error("Dirección no recuperada. Conexión rechazada o fallo.");
         }
         
-        // 4. Conexión exitosa
+        // 4. Conexión exitosa del frontend
         updateButtonUI(address, connectButton);
         console.log('[KleverChain] Conexión exitosa. Dirección:', address);
+        
+        // 5. ENVIAR DIRECCIÓN AL BACKEND DE FLASK
+        await sendAddressToBackend(address);
 
     } catch (error) {
         // Fallo en la conexión
@@ -97,9 +131,6 @@ async function connectKleverWallet() {
 window.onload = function() {
     const connectButton = document.getElementById('connect-wallet-btn');
     if (connectButton) {
-        // IMPORTANTE: NO HAY CÓDIGO AQUÍ QUE LLAME A getWalletAddress()
-        // La conexión sólo ocurre cuando se hace clic.
-
         // Asignar el listener al clic
         connectButton.addEventListener('click', connectKleverWallet);
         console.log("Listener de conexión asignado al botón.");
