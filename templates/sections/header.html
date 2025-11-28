@@ -1,0 +1,63 @@
+<!-- ========================================================= -->
+<!-- Cabecera / Navbar: Rutas de Soft UI corregidas con Jinja2 -->
+<!-- La estructura de esta sección se carga desde templates/sections/header.html -->
+<!-- ========================================================= -->
+
+<nav class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
+    <div class="container-fluid pe-0">
+        <!-- Logo y Título Principal -->
+        <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="/">
+            <i class="fas fa-globe me-2 text-info"></i> GlobalGive.io
+        </a>
+        
+        <!-- Botón de Menú (para móviles) -->
+        <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon mt-2">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+            </span>
+            <span class="sr-only">Toggle navigation</span>
+        </button>
+
+        <!-- Contenido de la Navegación -->
+        <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0" id="navigation">
+            <ul class="navbar-nav mx-auto">
+                <!-- Enlaces de Navegación -->
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center me-2 active" aria-current="page" href="/">
+                        <i class="fa fa-th-list opacity-6 me-1"></i>
+                        <span>Proyectos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center me-2" href="/ranking">
+                        <i class="fa fa-trophy opacity-6 me-1"></i>
+                        <span>Ranking</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center me-2" href="/swap">
+                        <i class="fa fa-exchange-alt opacity-6 me-1"></i>
+                        <span>Intercambiar</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center me-2" href="/dashboard">
+                        <i class="fa fa-user opacity-6 me-1"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Elemento de la Derecha: Conexión de Wallet -->
+            <ul class="navbar-nav d-lg-block d-none">
+                <li class="nav-item d-flex align-items-center me-3">
+                    <!-- CRÍTICO: Este ID es esencial para la funcionalidad de la billetera -->
+                    <button id="connect-wallet-btn" class="btn btn-sm bg-gradient-info mb-0 d-none d-lg-block">Conectar Wallet</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!-- End Navbar -->
