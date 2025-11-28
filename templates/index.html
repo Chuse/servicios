@@ -8,29 +8,30 @@
     <!-- FUENTES: Carga la fuente principal (Open Sans) -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     
-    <!-- Iconos: Font Awesome (Necesario para los iconos en el header) -->
+    <!-- Iconos: Font Awesome (Necesario para los iconos) -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 
     <!-- ESTILOS PRINCIPALES DE SOFT UI -->
-    <!-- CRÍTICO: Asegúrate de que este archivo esté en static/css/ -->
     <link id="pagestyle" href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" />
     
 </head>
 <body class="g-sidenav-show  bg-gray-100">
 
     <!-- BARRA DE NAVEGACIÓN / HEADER -->
-    <!-- Se carga el archivo con el botón de la billetera (header.html) -->
     {% include 'sections/header.html' %}
 
     <main class="main-content position-relative max-height-vh-100 h-100 mt-0 border-radius-lg ">
         
-        <!-- SECCIÓN HERO/CONTENIDO PRINCIPAL -->
+        <!-- ========================================================= -->
+        <!-- SECCIÓN 1: HERO y Mensaje de Conexión -->
+        <!-- ========================================================= -->
         <section class="min-vh-75 position-relative bg-cover" style="background-image: url('{{ url_for('static', filename='img/background_placeholder.jpg') }}'); background-position: center;">
+            <!-- MÁSCARA (Asegura contraste de texto) -->
             <span class="mask bg-gradient-dark opacity-6"></span>
+            
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-8 text-center mx-auto">
-                        <!-- El texto del HERO utiliza las clases de Soft UI (text-white, font-weight-bolder, etc.) -->
                         <div class="text-white mt-8 mb-5">
                             <h1 class="font-weight-bolder text-white">Transparencia Total en Donaciones e Inversiones</h1>
                             <p class="lead mt-3 mb-0">Explora proyectos auditables en tiempo real en KleverChain. Donde cada transacción importa y es visible.</p>
@@ -39,35 +40,118 @@
                 </div>
             </div>
             
-            <!-- TARJETA DE CONTENIDO INICIAL (Sobre el Hero) -->
+            <!-- TARJETA DE ESTADO INICIAL (Flotando sobre el Hero) -->
             <div class="container mt-n6">
                 <div class="row">
                     <div class="col-12">
                         <div class="card p-4 shadow-lg text-center">
                             <h2 class="h5 mb-3">Integración de Billetera Exitosa</h2>
-                            <p class="text-muted mb-0">La lógica de conexión está cargada. Haz clic en el botón en la barra de navegación para verificar la conexión. La dirección es enviada al backend de Flask.</p>
+                            <p class="text-muted mb-0">La conexión con Klever Wallet está activa. Haz clic en el botón "Conectar Wallet" en la barra superior.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- El resto del contenido de la página irá aquí -->
+
+        <!-- ========================================================= -->
+        <!-- SECCIÓN 2: CUADRÍCULA DE PROYECTOS -->
+        <!-- ========================================================= -->
+        <section class="py-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 mx-auto text-center">
+                        <h2 class="text-gradient text-primary mb-3">Nuestras Iniciativas Clave</h2>
+                        <p class="lead">GlobalGive.io audita y garantiza la transparencia en las siguientes áreas:</p>
+                    </div>
+                </div>
+                
+                <div class="row mt-5">
+                    
+                    <!-- Tarjeta 1: Proyectos de Caridad -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card card-plain h-100">
+                            <div class="card-header p-0 mx-3 mt-3 shadow-lg border-radius-lg bg-white text-center">
+                                <i class="fas fa-hand-holding-heart fa-3x text-primary py-4"></i>
+                            </div>
+                            <div class="card-body p-3">
+                                <h4 class="font-weight-bolder">Caridad y Ayuda Humanitaria</h4>
+                                <p class="mb-0">Dona a causas verificadas. Cada KLV gastado es rastreado en tiempo real, garantizando el 100% de transparencia.</p>
+                                <a href="javascript:;" class="text-primary icon-move-right mt-3">
+                                    Ver Proyectos
+                                    <i class="fas fa-arrow-right text-sm ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta 2: Inversiones Sociales -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card card-plain h-100">
+                            <div class="card-header p-0 mx-3 mt-3 shadow-lg border-radius-lg bg-white text-center">
+                                <i class="fas fa-seedling fa-3x text-success py-4"></i>
+                            </div>
+                            <div class="card-body p-3">
+                                <h4 class="font-weight-bolder">Inversiones de Impacto Ambiental</h4>
+                                <p class="mb-0">Invierte en proyectos de desarrollo sostenible con rendimientos auditables y transparentes. Triple impacto positivo.</p>
+                                <a href="javascript:;" class="text-success icon-move-right mt-3">
+                                    Ver Proyectos
+                                    <i class="fas fa-arrow-right text-sm ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta 3: Desarrollo Educativo -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card card-plain h-100">
+                            <div class="card-header p-0 mx-3 mt-3 shadow-lg border-radius-lg bg-white text-center">
+                                <i class="fas fa-graduation-cap fa-3x text-info py-4"></i>
+                            </div>
+                            <div class="card-body p-3">
+                                <h4 class="font-weight-bolder">Desarrollo Tecnológico y Educativo</h4>
+                                <p class="mb-0">Financia programas de educación en blockchain y tecnología. Creando la próxima generación de desarrolladores KleverChain.</p>
+                                <a href="javascript:;" class="text-info icon-move-right mt-3">
+                                    Ver Proyectos
+                                    <i class="fas fa-arrow-right text-sm ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        
+        <!-- FOOTER SIMPLE -->
+        <footer class="footer pt-3 mt-5 pb-0">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <p class="text-sm text-muted">© <script>document.write(new Date().getFullYear())</script>, GlobalGive.io. Todos los derechos reservados. Desarrollado sobre KleverChain.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
     </main>
 
     <!-- ============================================== -->
-    <!-- SCRIPTS CORE DE SOFT UI / BOOTSTRAP (AL FINAL) -->
+    <!-- SCRIPTS CORE (CARGADOS DESDE CDN) -->
     <!-- ============================================== -->
-    <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/plugins/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/plugins/smooth-scrollbar.min.js') }}"></script>
+    <!-- Popper.js y Bootstrap JS (core) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.min.js"></script>
     
-    <!-- SCRIPT DEL DASHBOARD (Para el manejo del sidebar y otros efectos de UI) -->
-    <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js?v=1.0.7') }}"></script>
+    <!-- Perfect Scrollbar y Smooth Scrollbar (Plugins de Soft UI) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/1.5.5/perfect-scrollbar.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/smooth-scrollbar/8.7.5/smooth-scrollbar.min.js"></script>
     
-    <!-- SCRIPT DE CONEXIÓN DE WALLET (¡Nuestro script personalizado!) -->
+    <!-- SCRIPT DEL DASHBOARD (Debe estar en tu servidor, si lo tienes) -->
+    <!-- Si este archivo no existe en static/js/, verás un error 404 en la consola. -->
+    <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js') }}"></script>
+    
+    <!-- SCRIPT DE CONEXIÓN DE WALLET -->
     <script src="{{ url_for('static', filename='js/wallet_connector.js') }}"></script>
 
 </body>
