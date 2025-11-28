@@ -1,95 +1,61 @@
-import requests
-import json
 import os
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, render_template, request, jsonify
 
-# Inicialización de la aplicación Flask
 app = Flask(__name__)
 
-# --- CONFIGURACIÓN DE LA API DE KLEVER ---
-KLEVER_SFT_ASSET_URL = "https://api.testnet.klever.org/v1.0/assets/sft/"
-DEFAULT_ASSET_ID = "PUKR-30R2/1" 
-
-
-# --- LÓGICA DE LECTURA DE METADATA DESDE KLEVER CHAIN ---
-
-def get_project_metadata(asset_id: str):
-    """
-    Consulta la API de Klever para obtener la metadata del SFT.
-    Extrae la cadena JSON de los atributos y la parsea.
-    """
-    full_url = KLEVER_SFT_ASSET_URL + asset_id
-    
-    try:
-        response = requests.get(full_url, timeout=10)
-        response.raise_for_status()
-        data = response.json()
-        
-        # Navegación profunda para encontrar la cadena de metadata
-        attributes_string = data.get('data', {}).get('asset', {}).get('meta', {}).get('metadata', {}).get('attributes', None)
-        
-        if not attributes_string:
-            return None, "Metadata not found or asset ID is incorrect."
-
-        # Parsear la cadena JSON a un objeto Python
-        project_config = json.loads(attributes_string)
-        return project_config, None
-        
-    except requests.exceptions.HTTPError as e:
-        return None, f"HTTP Error: Asset not found or API error ({response.status_code})"
-    except json.JSONDecodeError:
-        return None, "Critical Error: Metadata is not a valid JSON string in the asset's attributes."
-    except requests.exceptions.RequestException as e:
-        return None, f"Connection Error: Could not connect to Klever API ({e})"
-    except Exception as e:
-        return None, f"Unexpected Error: {e}"
-
-
-# =================================================================
-# 1. RUTAS DEL FRONTEND (SIRVE ARCHIVOS HTML)
-# =================================================================
+# Configuración básica (si la necesitas)
+# app.config.from_object('config.DevelopmentConfig')
 
 @app.route('/')
 def index():
-    # Carga la página principal que lista los proyectos
+    """Ruta principal que carga el index.html."""
     return render_template('index.html')
 
-@app.route('/proyecto')
-def project_detail():
-    # Carga la página de detalle del proyecto
-    return render_template('proyecto.html')
+@app.route('/ranking')
+def ranking():
+    """Ruta de ejemplo para Ranking."""
+    return "Página de Ranking"
+
+@app.route('/swap')
+def swap():
+    """Ruta de ejemplo para Swap."""
+    return "Página de Intercambio"
 
 @app.route('/dashboard')
-def user_dashboard():
-    # Carga el Dashboard de usuario y sus recibos SFT
-    return render_template('dashboard.html')
-    
-@app.route('/configuracion')
-def user_configuration():
-    # Carga la página de configuración de alias/nombre
-    return render_template('configuracion.html')
+def dashboard():
+    """Ruta de ejemplo para Dashboard."""
+    return "Página de Dashboard"
 
-
-# =================================================================
-# 2. RUTAS DE LA API (ENDPOINTs DE DATOS)
-# =================================================================
-
-@app.route('/api/project', methods=['GET'])
-def project_api():
-    """Endpoint para obtener la metadata de un proyecto SFT."""
-    asset_id = request.args.get('id', DEFAULT_ASSET_ID)
-    metadata, error = get_project_metadata(asset_id)
-    
-    if error:
-        return jsonify({"success": False, "error": error}), 404 if "not found" in error else 500
-    
-    return jsonify({"success": True, "data": metadata})
-
-
-# =================================================================
-# 3. EJECUCIÓN
-# =================================================================
+@app.route('/api/user/connect', methods=['POST'])
+def handle_wallet_connect():
+    """
+    Ruta API que recibe la dirección de la billetera del frontend (JS)
+    y la guarda o la procesa.
+    """
+    if request.method == 'POST':
+        try:
+            data = request.get_json()
+            wallet_address = data.get('address')
+            
+            if not wallet_address:
+                return jsonify({"status": "error", "message": "Dirección no proporcionada."}), 400
+            
+            # --- LÓGICA DE BACKEND AQUÍ ---
+            # En un entorno real, aquí guardarías la dirección en una sesión
+            # o base de datos. Por ahora, solo la imprimiremos.
+            print(f"Billetera conectada exitosamente: {wallet_address}")
+            
+            return jsonify({
+                "status": "success",
+                "message": "Dirección recibida y procesada.",
+                "address": wallet_address
+            }), 200
+            
+        except Exception as e:
+            print(f"Error al procesar la conexión de la billetera: {e}")
+            return jsonify({"status": "error", "message": "Error interno del servidor."}), 500
 
 if __name__ == '__main__':
-    # Ejecuta el servidor en modo debug
-    app.run(debug=True, port=5000)
+    # Configurar puerto para Render
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
