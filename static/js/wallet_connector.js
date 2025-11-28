@@ -64,11 +64,12 @@ async function connectKleverWallet() {
             throw new Error("Klever Extension not found. Por favor, asegúrate de que esté instalada y desbloqueada.");
         }
 
-        // 2. Ejecutar la inicialización (esto abre el pop-up)
+        // 2. Ejecutar la inicialización (esto abre el pop-up y ACTIVA el provider)
         console.log('Solicitando inicialización de Klever Wallet...');
         await window.kleverWeb.initialize();
+        // A PARTIR DE AQUÍ, YA PODEMOS LLAMAR A getWalletAddress()
 
-        // 3. OBTENER LA DIRECCIÓN (CORREGIDO: Usar getWalletAddress())
+        // 3. Obtener la dirección
         const address = window.kleverWeb.getWalletAddress();
         
         if (!address) {
@@ -96,15 +97,15 @@ async function connectKleverWallet() {
 window.onload = function() {
     const connectButton = document.getElementById('connect-wallet-btn');
     if (connectButton) {
-        // En el inicio, intentar ver si ya estamos conectados (útil para recargas)
-        if (window.kleverWeb) {
-            // USANDO LA FUNCIÓN CORREGIDA
-            const currentAddress = window.kleverWeb.getWalletAddress();
-            updateButtonUI(currentAddress, connectButton);
-        }
+        // --- CÓDIGO ELIMINADO ---
+        // Se ha eliminado el chequeo inicial de estado para evitar el error "Provider not init yet".
+        // La conexión solo se intentará al hacer clic.
+        // -----------------------
 
         // Asignar el listener al clic
         connectButton.addEventListener('click', connectKleverWallet);
+        console.log("Listener de conexión asignado al botón.");
+
     } else {
         console.warn("Botón 'connect-wallet-btn' no encontrado. Asegúrate de que el ID esté en templates/sections/header.html.");
     }
