@@ -1,1 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klever Wallet - Prueba de Conexión</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilos básicos para el estado */
+        .wallet-connected {
+            background-color: #38a169 !important; /* Tailwind green-600 */
+            color: white !important;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4 font-sans">
 
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl text-center">
+        
+        <!-- Mensaje de Diagnóstico Aclaratorio -->
+        <div class="p-3 mb-6 bg-yellow-100 text-yellow-800 rounded-lg text-xs border border-yellow-300">
+            <strong>NOTA IMPORTANTE:</strong> Si esta página muestra un error de "Extensión Klever no encontrada" en la consola, se debe a que las extensiones no cargan en entornos de previsualización (sandboxes). Por favor, pruébalo en un servidor web real (como `localhost` o tu dominio de Render).
+        </div>
+        
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">Prueba de Conexión KleverChain</h1>
+        <p class="text-sm text-gray-500 mb-6">Asegúrate de tener la extensión Klever Wallet instalada y desbloqueada.</p>
+        
+        <!-- Botón de Conexión -->
+        <button id="connect-wallet-btn"
+                class="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
+            Conectar Wallet
+        </button>
+
+        <!-- Área de Estado -->
+        <div id="connection-status" class="mt-4 p-3 bg-gray-200 text-gray-700 rounded-lg text-sm">
+            Esperando acción del usuario...
+        </div>
+    </div>
+
+    <script>
+        // --- COMIENZA EL SCRIPT DE CONEXIÓN (Basado en el código funcional del usuario) ---
+
+        const MAX_RETRIES = 5; 
+        const RETRY_DELAY_MS = 300;
+        const WALLET_CONNECTED_CLASS = 'wallet-connected';
+
+        /**
+         * Espera de forma estricta hasta que el objeto kleverWeb esté presente.
+         */
+        async function waitForKleverWebObject() {
+            for (let i = 0; i < MAX_RETRIES; i++) {
+                if (window.kleverWeb) {
+                    console.log('[KleverChain] Extensión Klever detectada.');
+                    return true;
+                }
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+            }
+            console.warn('[KleverChain] Extensión Klever no detectada tras el límite de tiempo.');
+            return false;
+        }
+
+        /**
+         * Intenta conectar a la Klever Wallet usando el flujo initialize() -> getWalletAddress().
+         */
+        async function connectKleverWallet() {
+            const connectButton = document.getElementById('connect-wallet-btn');
+            if (!connectButton) return;
+
+            connectButton.disabled = true;
+
+            try {
+                // 1. Verificar si el objeto existe con nuestra espera robusta
+                displayStatus('Verificando extensión Klever (Max 1.5 segundos)...', 'info');
+                if (!await waitForKleverWebObject()) {
+                    throw new Error("Klever Extension not found. **POSIBLE CONFLICTO DE ENTORNO**. Por favor, prueba este código en 'localhost'.");
+                }
+
+                // 2. Ejecutar la inicialización (ESTE ES EL PASO CLAVE QUE ABRE EL POPUP)
+                displayStatus('Inicializando Klever Wallet. Por favor, acepta la conexión en la extensión...', 'info');
+                await window.kleverWeb.initialize();
+
+                // 3. Obtener la dirección después de la inicialización
+                const address = window.kleverWeb.getWalletAddress();
+                
+                if (!address) {
+                    throw new Error("Cannot retrieve wallet address after initialization. Connection may have been rejected by the user.");
+                }
+                
+                const shortAddress = `${address.substring(0, 8)}...${address.substring(address.length - 4)}`;
+                displayStatus(`Conectado con éxito! Dirección: ${shortAddress}`, 'success');
+                
+                // Actualizar UI
+                connectButton.textContent = 'Billetera Conectada';
+                connectButton.classList.add(WALLET_CONNECTED_CLASS);
+                
+                console.log('[KleverChain] Conexión exitosa. Dirección:', address);
+
+            } catch (error) {
+                // Capturar errores
+                let errorMessage = error.message || "Error desconocido durante la conexión.";
+                
+                displayStatus(`Error al conectar: ${errorMessage}`, 'error');
+                console.error('[KleverChain] Error al conectar la Wallet:', error);
+                connectButton.disabled = false; // Habilitar el botón de nuevo en caso de fallo
+            }
+        }
+
+        /**
+         * Función utilitaria para mostrar el estado de la conexión en la UI.
+         */
+        function displayStatus(message, type) {
+            const statusEl = document.getElementById('connection-status');
+            if (!statusEl) return;
+            
+            statusEl.textContent = message;
+            statusEl.classList.remove('bg-gray-200', 'bg-blue-200', 'bg-green-200', 'bg-red-200', 'text-gray-700', 'text-blue-800', 'text-green-800', 'text-red-800');
+            
+            switch(type) {
+                case 'success':
+                    statusEl.classList.add('bg-green-200', 'text-green-800');
+                    break;
+                case 'error':
+                    statusEl.classList.add('bg-red-200', 'text-red-800');
+                    break;
+                case 'info':
+                default:
+                    statusEl.classList.add('bg-blue-200', 'text-blue-800');
+                    break;
+            }
+        }
+
+        // Configurar el listener para el botón al cargar la ventana
+        window.onload = function() {
+            const connectButton = document.getElementById('connect-wallet-btn');
+            if (connectButton) {
+                connectButton.addEventListener('click', connectKleverWallet);
+                displayStatus('Listo para conectar', 'default');
+            } else {
+                console.error("Botón 'connect-wallet-btn' no encontrado.");
+            }
+        };
+    </script>
+</body>
+</html>
