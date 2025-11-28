@@ -67,7 +67,7 @@ async function connectKleverWallet() {
         // 2. Ejecutar la inicialización (esto abre el pop-up y ACTIVA el provider)
         console.log('Solicitando inicialización de Klever Wallet...');
         await window.kleverWeb.initialize();
-        // A PARTIR DE AQUÍ, YA PODEMOS LLAMAR A getWalletAddress()
+        // ESTE ES EL PASO CRÍTICO QUE HABILITA getWalletAddress()
 
         // 3. Obtener la dirección
         const address = window.kleverWeb.getWalletAddress();
@@ -97,10 +97,8 @@ async function connectKleverWallet() {
 window.onload = function() {
     const connectButton = document.getElementById('connect-wallet-btn');
     if (connectButton) {
-        // --- CÓDIGO ELIMINADO ---
-        // Se ha eliminado el chequeo inicial de estado para evitar el error "Provider not init yet".
-        // La conexión solo se intentará al hacer clic.
-        // -----------------------
+        // IMPORTANTE: NO HAY CÓDIGO AQUÍ QUE LLAME A getWalletAddress()
+        // La conexión sólo ocurre cuando se hace clic.
 
         // Asignar el listener al clic
         connectButton.addEventListener('click', connectKleverWallet);
