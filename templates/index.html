@@ -16,7 +16,6 @@
     
     <!-- ============================================== -->
     <!-- ESTILOS PRINCIPALES DE SOFT UI -->
-    <!-- ESTA ES LA RUTA CRÍTICA QUE ARREGLA EL DISEÑO -->
     <!-- ============================================== -->
     <link id="pagestyle" href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" />
     
@@ -207,6 +206,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.8/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
 
+    <!-- DEPENDENCIA CRÍTICA: PerfectScrollbar (Debe ir antes de soft-ui-dashboard.js) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/perfect-scrollbar/1.5.5/perfect-scrollbar.min.js"></script>
+    
     <!-- Script principal de la plantilla -->
     <script src="{{ url_for('static', filename='js/soft-ui-dashboard.js') }}"></script>
     
