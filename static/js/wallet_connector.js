@@ -61,7 +61,6 @@ async function connectKleverWallet() {
     try {
         // 1. Verificar si el objeto existe
         if (!await waitForKleverWebObject()) {
-            // Este es el error que te salía en el sandbox, pero debería funcionar en Render
             throw new Error("Klever Extension not found. Por favor, asegúrate de que esté instalada y desbloqueada.");
         }
 
@@ -69,7 +68,7 @@ async function connectKleverWallet() {
         console.log('Solicitando inicialización de Klever Wallet...');
         await window.kleverWeb.initialize();
 
-        // 3. Obtener la dirección
+        // 3. OBTENER LA DIRECCIÓN (CORREGIDO: Usar getWalletAddress())
         const address = window.kleverWeb.getWalletAddress();
         
         if (!address) {
@@ -88,9 +87,8 @@ async function connectKleverWallet() {
         // Restaurar botón
         connectButton.disabled = false;
         connectButton.textContent = originalText;
-        // Usar una función de UI para mostrar el error si no puedes usar alert()
+        // Mostrar error en la consola
         console.error(`Error al conectar la Wallet: ${errorMessage}`); 
-        // Si necesitas un modal de error, tendrás que implementarlo con HTML/CSS/JS.
     }
 }
 
@@ -100,6 +98,7 @@ window.onload = function() {
     if (connectButton) {
         // En el inicio, intentar ver si ya estamos conectados (útil para recargas)
         if (window.kleverWeb) {
+            // USANDO LA FUNCIÓN CORREGIDA
             const currentAddress = window.kleverWeb.getWalletAddress();
             updateButtonUI(currentAddress, connectButton);
         }
