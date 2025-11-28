@@ -294,10 +294,14 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {boolean} silent Si es true, no muestra mensajes de éxito/error si no es necesaria la interacción.
      */
     async function connectKleverWallet(silent = false) {
+        // LOG DE DEPURACIÓN: Confirmar que la función se ejecuta.
+        console.log(`[KleverChain] Intentando conexión. Modo Silencioso: ${silent}`); 
+
         if (typeof window.kleverWeb === 'undefined') {
             if (!silent) {
                 showMessage("Error de Conexión", "La extensión Klever Wallet no está instalada.", "danger");
             }
+            console.error("[KleverChain] window.kleverWeb no está definido. Extensión no instalada.");
             return null;
         }
 
@@ -314,19 +318,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!silent) {
                     showMessage("Conexión Exitosa", `Wallet conectada: ${walletAddress.substring(0, 4)}...`, "success");
                 }
+                console.log("[KleverChain] Conexión exitosa. Dirección:", walletAddress);
                 return walletAddress;
 
             } else {
                 if (!silent) {
                     showMessage("Conexión Cancelada", "El usuario no seleccionó una cuenta o canceló la conexión.", "secondary");
                 }
+                console.warn("[KleverChain] Conexión cancelada por el usuario o no hay cuentas disponibles.");
                 return null;
             }
 
         } catch (error) {
-            console.error("Error al conectar Klever Wallet:", error);
+            console.error("[KleverChain] Error grave al conectar la Wallet:", error);
             if (!silent) {
-                showMessage("Error de Conexión", "Ocurrió un error durante la conexión.", "danger");
+                showMessage("Error de Conexión", "Ocurrió un error durante la conexión. Inténtelo de nuevo.", "danger");
             }
             return null;
         }
@@ -337,7 +343,10 @@ document.addEventListener('DOMContentLoaded', function() {
     connectKleverWallet(true); 
 
     // 2. Conectar al hacer clic en el botón
-    connectWalletBtn.addEventListener('click', () => connectKleverWallet(false));
+    connectWalletBtn.addEventListener('click', () => {
+        console.log("[KleverChain] Botón 'Conectar Wallet' pulsado.");
+        connectKleverWallet(false);
+    });
 });
         </script>
 </body>
