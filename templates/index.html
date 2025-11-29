@@ -8,7 +8,7 @@
     <!-- Tailwind CSS CDN para el diseño moderno -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Configuración personalizada de Tailwind (Opcional, pero bueno para la marca) -->
+    <!-- Configuración personalizada de Tailwind -->
     <script>
       tailwind.config = {
         theme: {
@@ -26,11 +26,19 @@
       }
     </script>
     
-    <!-- Iconos: Font Awesome (CDN) -->
+    <!-- Iconos: Font Awesome (Necesario para otros iconos) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <!-- Fuente Inter (para un aspecto moderno) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilo para los emojis de bandera para que parezcan más un icono */
+        .flag-emoji {
+            font-size: 1.25rem; /* Ajuste del tamaño del emoji */
+            line-height: 1;
+        }
+    </style>
 
 </head>
 <body class="bg-gray-50 font-sans antialiased">
@@ -66,19 +74,19 @@
                 
                 <!-- Banderas y Botón de Wallet -->
                 <div class="flex items-center space-x-4">
-                    <!-- Iconos de Banderas de Idioma -->
-                    <div class="flex space-x-2">
-                        <a href="?lang=es" title="Español" class="text-gray-500 hover:text-gray-700 transition duration-150">
-                            <i class="fas fa-flag-usa"></i> <!-- Usamos fa-flag-usa como bandera genérica para español (US) -->
+                    <!-- Iconos de Banderas de Idioma usando EMOJIS (solución robusta) -->
+                    <div class="flex space-x-3">
+                        <a href="?lang=es" title="Español" class="hover:opacity-75 transition duration-150">
+                            <span class="flag-emoji" role="img" aria-label="Bandera de España">🇪🇸</span>
                         </a>
-                        <a href="?lang=en" title="English" class="text-gray-500 hover:text-gray-700 transition duration-150">
-                            <i class="fas fa-flag-gbp"></i> <!-- Bandera de Reino Unido (Inglés) -->
+                        <a href="?lang=en" title="English" class="hover:opacity-75 transition duration-150">
+                            <span class="flag-emoji" role="img" aria-label="Bandera de Reino Unido">🇬🇧</span>
                         </a>
-                        <a href="?lang=pt" title="Português" class="text-gray-500 hover:text-gray-700 transition duration-150">
-                            <i class="fas fa-flag-pt"></i> <!-- Bandera de Portugal -->
+                        <a href="?lang=pt" title="Português" class="hover:opacity-75 transition duration-150">
+                            <span class="flag-emoji" role="img" aria-label="Bandera de Portugal">🇵🇹</span>
                         </a>
-                        <a href="?lang=uk" title="Українська" class="text-gray-500 hover:text-gray-700 transition duration-150">
-                            <i class="fas fa-flag-ua"></i> <!-- Bandera de Ucrania -->
+                        <a href="?lang=uk" title="Українська" class="hover:opacity-75 transition duration-150">
+                            <span class="flag-emoji" role="img" aria-label="Bandera de Ucrania">🇺🇦</span>
                         </a>
                     </div>
 
