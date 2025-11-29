@@ -1,76 +1,364 @@
-<!-- ========================================================= -->
-<!-- SIDEBAR (Barra Lateral) - CRUCIAL para el layout de Soft UI -->
-<!-- Este elemento DEBE tener el ID "sidenav-main" -->
-<!-- ========================================================= -->
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs fixed-start bg-white" id="sidenav-main">
-    <div class="sidenav-header">
-        <!-- Puedes usar tu logo aquí -->
-        <a class="navbar-brand m-0" href="/">
-            <span class="ms-1 font-weight-bold">GlobalGive.io Admin</span>
-        </a>
-    </div>
-    <hr class="horizontal dark mt-0">
-    <div class="collapse navbar-collapse w-auto h-auto" id="sidenav-collapse-main">
-        <ul class="navbar-nav">
-            <!-- Ejemplo de enlaces para el sidebar (puedes completarlos) -->
-            <li class="nav-item">
-                <a class="nav-link active" href="/dashboard">
-                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-chart-bar text-primary text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Dashboard</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/swap">
-                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="fas fa-exchange-alt text-dark text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Intercambiar / Donar</span>
-                </a>
-            </li>
-            <li class="nav-item mt-3">
-                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Cuenta</h6>
-            </li>
-        </ul>
-    </div>
-</aside>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeFi Dashboard - GlobalGive.io</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Configuración para usar la fuente Inter y un estilo básico -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* Fondo Soft UI */
+            min-height: 100vh;
+        }
+        /* Estilo para simular la línea divisoria debajo del header (sombra suave) */
+        .header-shadow {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
+            border-bottom: 1px solid #e5e7eb;
+        }
+        /* Estilo para el botón de Conectar Wallet (teal/cyan) */
+        .connect-btn {
+            background-color: #00bcd4; 
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0, 188, 212, 0.3);
+            transition: background-color 0.15s ease-in-out;
+            white-space: nowrap; /* Evita que el texto se rompa */
+            cursor: pointer;
+        }
+        .connect-btn:hover {
+            background-color: #00a0b8;
+        }
+        /* Estilo para el botón cuando ya está conectado */
+        .connected-btn {
+            background-color: #e5e7eb; /* Gris claro para conectado */
+            color: #4b5563; /* Texto gris oscuro */
+            box-shadow: none;
+            cursor: default;
+        }
+        .connected-btn:hover {
+            background-color: #e5e7eb;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-<!-- ========================================================= -->
-<!-- NAVBAR SUPERIOR (Cabecera) - Se ajusta al layout -->
-<!-- ========================================================= -->
+        // Función de utilidad para mostrar un mensaje sin usar alert()
+        const showMessage = (text) => {
+            const messageBox = document.getElementById('message-box');
+            messageBox.textContent = text;
+            messageBox.classList.remove('hidden', 'opacity-0', 'bg-red-500');
+            messageBox.classList.add('opacity-100', 'bg-green-500');
+            setTimeout(() => {
+                messageBox.classList.remove('opacity-100');
+                messageBox.classList.add('opacity-0');
+                setTimeout(() => messageBox.classList.add('hidden'), 500);
+            }, 3000);
+        };
 
-<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
-    <div class="container-fluid py-1 px-3">
-        <!-- Breadcrumb / Título de Página (Añadido para completar el layout del dashboard) -->
-        <nav aria-label="breadcrumb">
-            <h6 class="font-weight-bolder mb-0">{% block title_tag %}{% endblock %}</h6>
-        </nav>
-
-        <!-- Botón de Menú (para móviles) y Conexión de Wallet -->
-        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navigation">
-            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                <!-- Barra de búsqueda si es necesaria -->
-            </div>
-            <ul class="navbar-nav justify-content-end">
-                <!-- Enlaces de Navegación (Solo para tablet/desktop si el sidebar no se usa) -->
-                <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
-                    <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
-                        <div class="sidenav-toggler-inner">
-                            <i class="sidenav-toggler-line"></i>
-                            <i class="sidenav-toggler-line"></i>
-                            <i class="sidenav-toggler-line"></i>
+        // --- Componente: DonationSwapWidget (Simulación de tu widget) ---
+        const DonationSwapWidget = ({ isConnected, connectWallet }) => {
+            if (!isConnected) {
+                // Estado: No conectado - Muestra el mensaje de Conectar para Donar
+                return (
+                    <div className="flex justify-center items-center h-full min-h-[70vh] p-4 pt-12">
+                        <div className="w-full max-w-sm bg-white p-10 rounded-2xl shadow-xl border border-gray-200 text-center">
+                            <p className="text-3xl font-extrabold text-blue-600 mb-6">
+                                ¡Conéctate para Donar!
+                            </p>
+                            <p className="text-sm text-gray-600 mb-8 leading-relaxed">
+                                Necesitas conectar tu billetera Klever para realizar un intercambio o donación.
+                            </p>
+                            <button
+                                onClick={connectWallet}
+                                className="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition duration-150"
+                            >
+                                Conectar Billetera Klever
+                            </button>
                         </div>
-                    </a>
-                </li>
-                
-                <!-- CRÍTICO: Este ID es esencial para la funcionalidad de la billetera -->
-                <li class="nav-item d-flex align-items-center ms-3">
-                    <button id="connect-wallet-btn" class="btn btn-sm bg-gradient-info mb-0 d-lg-block">Conectar Wallet</button>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<!-- End Navbar -->
+                    </div>
+                );
+            }
+
+            // Estado: Conectado - Muestra el Widget de Intercambio/Donación real
+            const handleDonation = () => {
+                const amountInput = document.getElementById('klv-amount');
+                const amount = parseFloat(amountInput.value);
+                if (isNaN(amount) || amount <= 0) {
+                    showMessage("Por favor, introduce una cantidad válida para donar.");
+                    return;
+                }
+                showMessage(`Donación de ${amount} KLV confirmada. ¡Gracias!`);
+            }
+
+            return (
+                <div className="flex justify-center h-full min-h-[70vh] p-4 pt-12">
+                    <div className="w-full max-w-lg bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-200">
+                        <h2 className="text-xl font-extrabold text-gray-700 mb-6 text-center">
+                            Intercambiar / Donar KLV
+                        </h2>
+
+                        {/* Formulario de SWAP/Donación funcional simulado */}
+                        <div className="space-y-4">
+                            {/* Campo de Cantidad */}
+                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                <label htmlFor="klv-amount" className="text-sm font-medium text-gray-500 mb-1 block">Cantidad de KLV a Donar</label>
+                                <div className="flex items-center justify-between">
+                                    <input
+                                        id="klv-amount"
+                                        type="number"
+                                        placeholder="0.0"
+                                        min="0"
+                                        className="text-3xl font-bold w-full bg-transparent focus:outline-none text-gray-900"
+                                        aria-label="Cantidad de KLV"
+                                    />
+                                    <span className="text-xl font-bold text-gray-700">KLV</span>
+                                </div>
+                                <span className="text-xs text-gray-400 mt-1 block">Balance Disponible: 1,250 KLV</span>
+                            </div>
+
+                            {/* Botón de Donar */}
+                            <button
+                                onClick={handleDonation}
+                                className="w-full bg-pink-600 text-white font-bold py-3 rounded-xl hover:bg-pink-700 transition duration-300 mt-6 shadow-lg shadow-pink-200"
+                            >
+                                Confirmar Donación de KLV
+                            </button>
+                            
+                            {/* Opciones de Intercambio (Swap) irían aquí */}
+                            <p className="text-center text-sm text-gray-500 pt-4">
+                                o <a href="#" className="text-blue-600 hover:underline font-medium" onClick={(e) => { e.preventDefault(); showMessage('Llevando al Swap Avanzado...'); }}>Ir a la Interfaz de Swap Avanzado</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Componente: DashboardContent ---
+        const DashboardContent = () => {
+            return (
+                <div className="container mx-auto p-4 lg:p-6 mt-4 md:mt-12">
+                    <h1 className="text-3xl font-extrabold text-gray-800 mb-8 hidden md:block">Resumen del Dashboard</h1>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {/* Tarjeta 1: Balance Total */}
+                        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 transition hover:shadow-lg">
+                            <p className="text-sm font-medium text-gray-500">Balance Total (USD)</p>
+                            <p className="text-4xl font-bold text-gray-900 mt-1">$45,230.50</p>
+                            <p className="text-sm text-green-500 mt-2 font-semibold flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                </svg>
+                                +5.2% (24h)
+                            </p>
+                        </div>
+                        {/* Tarjeta 2: Volumen de Swap */}
+                        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 transition hover:shadow-lg">
+                            <p className="text-sm font-medium text-gray-500">Volumen de Swap (24h)</p>
+                            <p className="text-4xl font-bold text-gray-900 mt-1">2.1M USD</p>
+                            <p className="text-sm text-red-500 mt-2 font-semibold flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                </svg>
+                                -1.1% (vs ayer)
+                            </p>
+                        </div>
+                        {/* Tarjeta 3: Tokens en Pool */}
+                        <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 transition hover:shadow-lg">
+                            <p className="text-sm font-medium text-gray-500">Tokens Activos</p>
+                            <p className="text-4xl font-bold text-gray-900 mt-1">14</p>
+                            <p className="text-sm text-gray-500 mt-2">ETH, USDC, DAI, KLV, etc.</p>
+                        </div>
+                    </div>
+                    
+                    {/* Sección de Historial de Transacciones */}
+                    <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 mt-8">
+                         <h2 className="text-xl font-semibold text-gray-800 mb-4">Historial Reciente de Donaciones</h2>
+                         <ul className="divide-y divide-gray-100">
+                            <li className="py-3 flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Donación enviada a Proyecto Alpha</span>
+                                <span className="text-red-500 font-bold">- 500 KLV</span>
+                                <span className="text-xs text-gray-500 hidden sm:block">Hace 2 horas</span>
+                            </li>
+                            <li className="py-3 flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Swap KLV/USDC (Beneficio)</span>
+                                <span className="text-green-500 font-bold">+ 120 USDC</span>
+                                <span className="text-xs text-gray-500 hidden sm:block">Ayer</span>
+                            </li>
+                            <li className="py-3 flex justify-between items-center">
+                                <span className="text-gray-700 font-medium">Retiro a Billetera</span>
+                                <span className="text-red-500 font-bold">- 0.5 ETH</span>
+                                <span className="text-xs text-gray-500 hidden sm:block">Hace 3 días</span>
+                            </li>
+                         </ul>
+                    </div>
+                </div>
+            );
+        };
+
+
+        // --- Componente: Header (Cabecera) ---
+        const Header = ({ currentView, setView, isConnected, connectWallet, disconnectWallet }) => {
+            const buttonText = isConnected ? 'Wallet Conectada' : 'Conectar Wallet';
+            const buttonClass = isConnected ? 'connect-btn connected-btn' : 'connect-btn';
+            
+            const handleWalletClick = () => {
+                if (isConnected) {
+                    disconnectWallet();
+                } else {
+                    connectWallet();
+                }
+            };
+
+            const linkClass = (view) => `h-full flex items-center px-3 py-2 text-sm font-medium transition duration-150 border-b-2 ${
+                currentView === view 
+                    ? 'text-blue-600 border-blue-600' 
+                    : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300'
+            }`;
+
+            return (
+                <nav className="bg-white header-shadow sticky top-0 z-10">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between items-center h-16">
+                            {/* Logo / Título */}
+                            <div className="flex items-center">
+                                <span className="text-xl font-black text-gray-800 tracking-wider">GlobalGive.io</span>
+                            </div>
+
+                            {/* Navegación (Enlaces) */}
+                            <div className="flex space-x-2 sm:space-x-6 h-full">
+                                <a 
+                                    href="#" 
+                                    onClick={(e) => { e.preventDefault(); setView('home'); }} 
+                                    className={linkClass('home')}
+                                >
+                                    Dashboard
+                                </a>
+                                <a 
+                                    href="#" 
+                                    onClick={(e) => { e.preventDefault(); setView('swap'); }} 
+                                    className={linkClass('swap')}
+                                >
+                                    Intercambiar / Donar
+                                </a>
+                                <a 
+                                    href="#" 
+                                    onClick={(e) => { e.preventDefault(); showMessage("Función de Ranking pendiente."); }} 
+                                    className="h-full flex items-center px-3 py-2 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 hover:border-gray-300 transition duration-150"
+                                >
+                                    Ranking
+                                </a>
+                            </div>
+
+                            {/* Botón de Conexión */}
+                            <div className="flex items-center">
+                                <button
+                                    className={buttonClass}
+                                    onClick={handleWalletClick}
+                                    disabled={isConnected}
+                                >
+                                    {buttonText}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        // --- Componente Principal: App ---
+        const App = () => {
+            // Estado para controlar qué vista se muestra (home, swap, pool, etc.)
+            const [currentView, setCurrentView] = useState('home');
+            // Estado para simular la conexión de la billetera
+            const [isConnected, setIsConnected] = useState(false);
+            
+            // Ref para el timeout de desconexión
+            const disconnectTimeoutRef = React.useRef(null);
+
+            const connectWallet = () => {
+                console.log("Simulando conexión a la billetera Klever...");
+                setIsConnected(true);
+                showMessage("¡Billetera Klever conectada con éxito!");
+
+                if (disconnectTimeoutRef.current) {
+                    clearTimeout(disconnectTimeoutRef.current);
+                }
+            };
+
+            const disconnectWallet = () => {
+                console.log("Billetera desconectada.");
+                setIsConnected(false);
+                showMessage("Billetera desconectada.");
+            };
+
+            // Función de renderizado condicional del contenido
+            const renderContent = () => {
+                switch (currentView) {
+                    case 'swap':
+                        return <DonationSwapWidget isConnected={isConnected} connectWallet={connectWallet} />;
+                    case 'home':
+                    default:
+                        return <DashboardContent />;
+                }
+            };
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    {/* Mensaje Modal Temporal (en lugar de alert) */}
+                    <div 
+                        id="message-box" 
+                        className="fixed top-5 right-5 bg-green-500 text-white p-3 rounded-lg shadow-xl z-50 transition-opacity duration-500 opacity-0 hidden"
+                        role="status"
+                    >
+                        {/* El texto se inserta por JavaScript */}
+                    </div>
+
+                    {/* 1. Cabecera con navegación y estado de conexión */}
+                    <Header 
+                        currentView={currentView} 
+                        setView={setCurrentView} 
+                        isConnected={isConnected}
+                        connectWallet={connectWallet}
+                        disconnectWallet={disconnectWallet}
+                    />
+
+                    {/* 2. Contenido Principal */}
+                    <main className="flex-grow">
+                        {renderContent()}
+                    </main>
+
+                    {/* 3. Pie de Página */}
+                    <footer className="bg-gray-100 text-gray-600 text-center border-t border-gray-300 mt-12">
+                         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row justify-between items-center text-xs">
+                            <p>&copy; {new Date().getFullYear()}, hecho con <span className="text-red-500">❤️</span> para un mundo más transparente.</p>
+                            <div className="flex space-x-4 mt-2 md:mt-0">
+                                <a href="#" className="hover:text-blue-600">GlobalGive.io</a>
+                                <a href="#" className="hover:text-blue-600">Acerca de</a>
+                                <a href="#" className="hover:text-blue-600">Licencia</a>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        // Renderizado de la aplicación
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+    </script>
+</body>
+</html>
