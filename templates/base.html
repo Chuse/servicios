@@ -4,17 +4,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-    <!-- Bloque de Título -->
-    <title>{% block title %}GlobalGive.io - Transparencia y Donaciones{% endblock %}</title>
+    <title>{% block title %}GlobalGive.io{% endblock %}</title>
 
-    <!-- Fuente Inter (si se usa Soft UI/Bootstrap) -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    
-    <!-- Iconos Font Awesome -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     
-    <!-- CSS - Carga de estilos comunes (Soft UI) -->
-    <!-- Asegúrate de tener los archivos CSS en static/css/ -->
     <link id="pagestyle" href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" />
     
     {% block stylesheets %}{% endblock %}
@@ -22,26 +16,24 @@
 </head>
 <body class="g-sidenav-show bg-gray-100">
 
-    <!-- 1. CABECERA: ACTIVADA -->
-    <!-- Carga templates/sections/header.html -->
-    {% include 'sections/header.html' %}
+    <!-- 1. CABECERA: ACTIVA - PRUEBA CRÍTICA -->
+    <!-- Si esto causa error 500, el problema está en 'sections/header.html' o su ubicación. -->
+    {% include 'sections/header.html' %} 
 
     <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg">
-        <!-- Contenido Específico de la Página -->
         {% block content %}
         {% endblock %}
+        
+        <p style="text-align:center; margin-top: 50px;">CONTENIDO CARGADO</p>
     </main>
 
-    <!-- 2. PIE DE PÁGINA: ACTIVADO -->
-    <!-- Carga templates/sections/footer.html -->
-    {% include 'sections/footer.html' %}
+    <!-- 2. PIE DE PÁGINA: COMENTADO para aislar el error -->
+    <!-- {% include 'sections/footer.html' %} -->
+    <p style="text-align:center; color:red; font-size: 14px; margin-bottom: 10px;">[DEBUG: Footer Desactivado]</p>
 
-    <!-- Scripts JS Comunes -->
     <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js') }}"></script>
-    
-    <!-- Script de Conexión de Wallet (requerido por header.html) -->
     <script src="{{ url_for('static', filename='js/wallet_connection.js') }}"></script>
 
     {% block javascripts %}{% endblock %}
