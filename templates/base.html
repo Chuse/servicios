@@ -4,13 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-    <!-- CORRECCIÓN CLAVE: El bloque 'title' se define una sola vez aquí. -->
-    <title>{% block title %}GlobalGive.io{% endblock %}</title>
+    <!-- Bloque de Título -->
+    <title>{% block title %}GlobalGive.io - Transparencia y Donaciones{% endblock %}</title>
 
+    <!-- Fuente Inter (si se usa Soft UI/Bootstrap) -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    
+    <!-- Iconos Font Awesome -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     
     <!-- CSS - Carga de estilos comunes (Soft UI) -->
+    <!-- Asegúrate de tener los archivos CSS en static/css/ -->
     <link id="pagestyle" href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" />
     
     {% block stylesheets %}{% endblock %}
@@ -18,24 +22,26 @@
 </head>
 <body class="g-sidenav-show bg-gray-100">
 
-    <!-- 1. CABECERA: COMENTADA TEMPORALMENTE (DEBUG INCLUSIONES) -->
-    <!-- {% include 'sections/header.html' %} -->
-    <p style="text-align:center; color:blue; font-size: 16px; margin-top: 10px;">[DEBUG: Cabecera Desactivada]</p>
+    <!-- 1. CABECERA: ACTIVADA -->
+    <!-- Carga templates/sections/header.html -->
+    {% include 'sections/header.html' %}
 
     <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg">
-        <!-- Contenido Específico (donde se insertará swap.html) -->
+        <!-- Contenido Específico de la Página -->
         {% block content %}
         {% endblock %}
     </main>
 
-    <!-- 2. PIE DE PÁGINA: COMENTADO TEMPORALMENTE (DEBUG INCLUSIONES) -->
-    <!-- {% include 'sections/footer.html' %} -->
-    <p style="text-align:center; color:blue; font-size: 16px; margin-bottom: 10px;">[DEBUG: Pie de página Desactivado]</p>
+    <!-- 2. PIE DE PÁGINA: ACTIVADO -->
+    <!-- Carga templates/sections/footer.html -->
+    {% include 'sections/footer.html' %}
 
     <!-- Scripts JS Comunes -->
     <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js') }}"></script>
+    
+    <!-- Script de Conexión de Wallet (requerido por header.html) -->
     <script src="{{ url_for('static', filename='js/wallet_connection.js') }}"></script>
 
     {% block javascripts %}{% endblock %}
