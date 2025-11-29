@@ -25,13 +25,13 @@
 
     {% include 'sections/footer.html' %}
 
-    <!-- Core JS (Necesarios para Bootstrap) -->
+    <!-- Core JS -->
     <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
     
-    <!-- JS COMENTADOS: Se desactivan las inicializaciones de Soft UI Dashboard para evitar errores -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/perfect-scrollbar/1.5.0/perfect-scrollbar.min.js"></script> -->
-    <!-- <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js') }}"></script> -->
+    <!-- JS REACTIVADO: Necesario para que el diseño de Soft UI funcione correctamente. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/perfect-scrollbar/1.5.0/perfect-scrollbar.min.js"></script>
+    <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js') }}"></script>
     
     <!-- RUTA CORRECTA: wallet_connector.js -->
     <script src="{{ url_for('static', filename='js/wallet_connector.js') }}"></script>
