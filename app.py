@@ -14,17 +14,20 @@ def index():
 @app.route('/ranking')
 def ranking():
     """Ruta de ejemplo para Ranking."""
-    return "Página de Ranking"
+    # Usará base.html si existe templates/ranking.html que lo extiende
+    return render_template('ranking.html')
 
 @app.route('/swap')
 def swap():
-    """Ruta de ejemplo para Swap."""
-    return "Página de Intercambio"
+    """Ruta de Intercambio/Donación (Ahora usa la plantilla Jinja)."""
+    # Renderiza la nueva plantilla que extiende base.html
+    return render_template('swap.html')
 
 @app.route('/dashboard')
 def dashboard():
     """Ruta de ejemplo para Dashboard."""
-    return "Página de Dashboard"
+    # Usará base.html si existe templates/dashboard.html que lo extiende
+    return render_template('dashboard.html')
 
 @app.route('/api/user/connect', methods=['POST'])
 def handle_wallet_connect():
@@ -41,8 +44,8 @@ def handle_wallet_connect():
                 return jsonify({"status": "error", "message": "Dirección no proporcionada."}), 400
             
             # --- LÓGICA DE BACKEND AQUÍ ---
-            # En un entorno real, aquí guardarías la dirección en una sesión
-            # o base de datos. Por ahora, solo la imprimiremos.
+            # 1. Guardar la dirección en una sesión o base de datos.
+            # 2. Cargar datos del usuario relacionados con esta dirección.
             print(f"Billetera conectada exitosamente: {wallet_address}")
             
             return jsonify({
