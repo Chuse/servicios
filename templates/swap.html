@@ -1,9 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlobalGive.io - Widget de Donación KLV</title>
+
+
+{% block title %}Intercambiar/Donar KLV{% endblock %}
+
+{% block content %}
+    <!-- 
+        El widget de React requiere sus propios CDNs de Tailwind, React y Babel, 
+        que se incluyen aquí para que solo carguen cuando se renderice esta página.
+    -->
     <!-- Incluye Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Configuración para colores personalizados de Klever Chain en Tailwind -->
@@ -25,14 +28,14 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <!-- Importamos Babel para transpilar el JSX en el navegador -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-</head>
-<body class="bg-gray-50">
-
-    <div id="root">
-        <!-- Contenido de fallback mientras se carga React -->
+    
+    <!-- Contenedor del Widget de Donación -->
+    <div id="root" class="py-12">
         <div class="text-center p-10 text-gray-500">Cargando aplicación Widget...</div>
     </div>
+{% endblock %}
 
+{% block javascripts %}
     <script type="text/babel">
         // Acceso a Hooks de React desde el objeto global
         const { useState, useEffect, useCallback } = React;
@@ -375,9 +378,10 @@
         
         // --- INICIALIZACIÓN DE REACT ---
         const container = document.getElementById('root');
-        const root = ReactDOM.createRoot(container);
-        root.render(<App />);
-
+        // Esperamos a que el DOM esté completamente cargado (aunque en este contexto Babel lo maneja)
+        document.addEventListener('DOMContentLoaded', () => {
+            const root = ReactDOM.createRoot(container);
+            root.render(<App />);
+        });
     </script>
-</body>
-</html>
+{% endblock %}
