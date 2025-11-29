@@ -3,11 +3,6 @@
 {% block title %}Intercambiar/Donar KLV{% endblock %}
 
 {% block content %}
-    <!-- 
-    IMPORTANTE: La ubicación de los scripts de React/Babel en el bloque 'content'
-    garantiza que se carguen ANTES del script principal en 'javascripts'.
-    -->
-    
     <!-- Dependencias de Frontend para el Widget -->
     
     <!-- 1. Carga de Tailwind CSS (OK) -->
@@ -27,12 +22,9 @@
       }
     </script>
     
-    <!-- 2. Dependencias de React y Babel (CRÍTICO: Orden de Carga) -->
-    <!-- React Core -->
+    <!-- 2. Dependencias de React y Babel -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <!-- React DOM (IMPORTANTE: Corregido y debe cargar antes de Babel) -->
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script> 
-    <!-- Babel Standalone (Último en cargar) -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <!-- Contenedor del Widget de Donación (React) -->
@@ -52,7 +44,7 @@
         const KLV_TOKEN_ID = '0x4332D6E8B907873D440498b36873A2A8557F265C'; 
 
         // --------------------------------------------------------------------------------
-        // 1. Hook para manejar la conexión y los datos de la billetera (wallet_connection.js)
+        // 1. Hook para manejar la conexión y los datos de la billetera (Usa wallet_connector.js cargado en base.html)
         // --------------------------------------------------------------------------------
         const useWalletConnection = () => {
             const [walletAddress, setWalletAddress] = useState(null);
@@ -66,7 +58,7 @@
                     setKlvBalance(balance);
                 };
 
-                // Suscribirse a los eventos después de que el script wallet_connection.js cargue
+                // Suscribirse a los eventos después de que el script cargue
                 if (window.addEventListener) {
                     window.addEventListener('walletConnected', updateWalletState);
                     window.addEventListener('walletDisconnected', updateWalletState);
@@ -136,17 +128,15 @@
                 const receiverAddress = "kth_80436d10c149d5c21f70691e3e7a08b671a53986"; 
                 
                 try {
-                    // Simulación de la función de envío de transacción global de wallet_connection.js
+                    // Llama a la función global de envío de transacción
                     if (window.sendKlvTransaction) {
-                        // Enviar la cantidad, el ID del token y la dirección de destino
                         const txHash = await window.sendKlvTransaction(receiverAddress, KLV_TOKEN_ID, numAmount);
                         setMessage(`¡Transacción exitosa! Hash: ${txHash}. Gracias por tu donación.`);
                         setAmount('');
                     } else {
-                        setMessage("Error: La función de transacción no está disponible (sendKlvTransaction).");
+                        setMessage("Error: La función de transacción no está disponible.");
                     }
                 } catch (error) {
-                    // Manejar errores de la billetera (ej. usuario cancela, falla la red)
                     setMessage(`Error en la transacción: ${error.message || 'Algo salió mal. Inténtalo de nuevo.'}`);
                 } finally {
                     setIsLoading(false);
