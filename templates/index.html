@@ -25,41 +25,458 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <!-- Importamos Babel para transpilar el JSX en el navegador -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- SE ELIMINARON las cargas de Lucide Icons CDN ya que los iconos ahora son SVGs nativos en App.jsx -->
 </head>
 <body class="bg-gray-50">
 
-    <!-- 
-        El único elemento en el body.
-        React usará este div con el ID 'root' para inyectar toda la aplicación (App.jsx).
-    -->
     <div id="root">
         <!-- Contenido de fallback mientras se carga React -->
         <div class="text-center p-10 text-gray-500">Cargando aplicación...</div>
     </div>
 
     <!-- 
-        Importamos nuestro código de la aplicación (App.jsx).
-        El atributo type="text/babel" le indica a Babel que compile este script.
+        TODO EL CÓDIGO REACT ANTERIORMENTE EN APP.JSX AHORA ESTÁ AQUÍ.
+        Esto elimina la dependencia de archivos externos.
     -->
-    <script type="text/babel" src="App.jsx"></script>
-
     <script type="text/babel">
-        // Este bloque de script se asegura de que cuando el DOM esté listo, 
-        // se renderice el componente principal de React (App) en el div 'root'.
+        // Acceso a Hooks de React desde el objeto global
+        const { useState, useEffect, useCallback } = React;
+
+        // --- Componentes de Iconos SVG Nativos ---
+        // Se mantienen aquí para evitar cualquier dependencia externa
+        
+        const Icon = ({ children, size = 24, className = "" }) => (
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width={size} 
+                height={size} 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                className={className}
+            >
+                {children}
+            </svg>
+        );
+
+        const HeartHandshake = (props) => (
+            <Icon {...props}>
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                <path d="M12 5L12 18"/>
+                <path d="M16 11H8"/>
+            </Icon>
+        );
+
+        const Wallet = (props) => (
+            <Icon {...props}>
+                <path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/>
+                <path d="M21 12h-7a2 2 0 0 1-2-2V7"/>
+                <path d="M16 16h2"/>
+            </Icon>
+        );
+
+        const Info = (props) => (
+            <Icon {...props}>
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 16v-4"/>
+                <path d="M12 8h.01"/>
+            </Icon>
+        );
+
+        const CheckCircle = (props) => (
+            <Icon {...props}>
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <path d="M22 4 12 14.01l-3-3"/>
+            </Icon>
+        );
+
+        const AlertTriangle = (props) => (
+            <Icon {...props}>
+                <path d="M10.29 3.86 1.84 18a2 2 0 0 0 1.71 3h16.89a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <path d="M12 9v4"/>
+                <path d="M12 17h.01"/>
+            </Icon>
+        );
+
+        const ArrowRight = (props) => (
+            <Icon {...props}>
+                <path d="M5 12h14"/>
+                <path d="m12 5 7 7-7 7"/>
+            </Icon>
+        );
+
+        const Leaf = (props) => (
+            <Icon {...props}>
+                <path d="M11 20A7 7 0 0 1 9.86 6.13M15.29 11a7 7 0 0 0-4.04-4.04 7 7 0 0 1 1.77-5.5L16 2l-1 2-2 1"/>
+                <path d="M2 20s1.5-1.5 2-2c-.7-.5-1.5-1-2-2L2 20z"/>
+            </Icon>
+        );
+
+        const GraduationCap = (props) => (
+            <Icon {...props}>
+                <path d="M22 10v6"/>
+                <path d="M12 12 2 7.5l10-4.5 10 4.5zM4.5 15.5l6-3M19.5 15.5l-6-3"/>
+                <path d="M19 18v-6"/>
+                <path d="M5 18v-6"/>
+            </Icon>
+        );
+
+        const Loader2 = (props) => (
+            <Icon {...props}>
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+            </Icon>
+        );
+        // --- FIN Componentes de Iconos SVG ---
+
+
+        // --- Configuración de Colores y Constantes ---
+        const KLV_COLORS = {
+            green: '#00B894',
+            dark: '#1C1C1C',
+            blue: '#2152ff',
+            // Definiciones de Tailwind
+            blueText: 'text-[#2152ff]',
+            blueBorder: 'border-[#2152ff]',
+            blueBg: 'bg-[#2152ff]',
+            blueHover: 'hover:bg-[#2152ff]/90',
+            darkBg: 'bg-[#1C1C1C]',
+            darkHover: 'hover:bg-[#1C1C1C]/80',
+            greenBg: 'bg-[#00B894]',
+            greenText: 'text-[#00B894]',
+        };
+
+        const MAX_RETRIES = 15;
+        const RETRY_DELAY_MS = 250;
+        const BOOTSTRAP_DELAY_MS = 1000;
+
+        // --- Funciones de Lógica ---
+
+        /**
+         * Hook personalizado para manejar la lógica de conexión de la Klever Wallet.
+         */
+        const useWalletConnection = () => {
+            const [walletAddress, setWalletAddress] = useState(null);
+            const [connectionStatus, setConnectionStatus] = useState({
+                title: 'Listo para Conectar',
+                message: 'Haz clic en "Conectar Wallet" para buscar la extensión Klever.',
+                type: 'info', // 'info', 'success', 'error'
+            });
+            const [isLoading, setIsLoading] = useState(false);
+
+            const connectWallet = useCallback(async () => {
+                setIsLoading(true);
+                setConnectionStatus({
+                    title: 'Buscando Extensión',
+                    message: 'Buscando Klever Wallet. Puede tomar un momento...',
+                    type: 'info',
+                });
+
+                try {
+                    // Función para esperar a que window.kleverWeb esté disponible
+                    const waitForKleverWeb = async () => {
+                        await new Promise(resolve => setTimeout(resolve, BOOTSTRAP_DELAY_MS));
+                        for (let i = 0; i < MAX_RETRIES; i++) {
+                            // Verificación mejorada para asegurar que el objeto y la función existan
+                            if (window.kleverWeb && typeof window.kleverWeb.getAccounts === 'function') {
+                                console.log(`[KleverChain] Extensión detectada en el intento ${i + 1}.`);
+                                return true;
+                            }
+                            await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+                        }
+                        console.error('[KleverChain] ERROR CRÍTICO: La extensión Klever no fue detectada.');
+                        return false;
+                    };
+
+                    if (!(await waitForKleverWeb())) {
+                        throw new Error("Extensión Klever Wallet no detectada. Por favor, asegúrate de que esté instalada, activa y la página se haya recargado.");
+                    }
+
+                    setConnectionStatus({
+                        title: 'Solicitando Conexión',
+                        message: 'Por favor, aprueba la conexión en la ventana emergente de Klever Wallet.',
+                        type: 'info',
+                    });
+
+                    // Ejecutar la función de la extensión
+                    const accounts = await window.kleverWeb.getAccounts();
+
+                    if (accounts && accounts.length > 0) {
+                        const address = accounts[0].address;
+                        setWalletAddress(address);
+
+                        // Notificar al "servidor" (simulación)
+                        fetch('/api/user/connect', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ address })
+                        }).catch(e => console.error("Error al comunicarse con el servidor (simulación):", e));
+
+                        setConnectionStatus({
+                            title: '¡Conexión Exitosa!',
+                            message: 'Dirección conectada.',
+                            type: 'success',
+                        });
+                    } else {
+                        setConnectionStatus({
+                            title: 'Conexión Rechazada',
+                            message: 'El usuario canceló la solicitud o no seleccionó una cuenta.',
+                            type: 'error',
+                        });
+                    }
+                } catch (error) {
+                    console.error('[KleverChain] Error al conectar la Wallet:', error);
+                    const displayMessage = error.message.includes('Extensión Klever Wallet no detectada')
+                        ? 'No se pudo encontrar la extensión. Verifica si está instalada y vuelve a cargar la página.'
+                        : `Ocurrió un error inesperado. Mensaje: ${error.message}`;
+
+                    setConnectionStatus({
+                        title: 'Fallo de Conexión',
+                        message: displayMessage,
+                        type: 'error',
+                    });
+                } finally {
+                    setIsLoading(false);
+                }
+            }, []);
+
+            return { walletAddress, connectionStatus, connectWallet, isLoading };
+        };
+
+        // --- Componentes de UI ---
+
+        /**
+         * Componente Header (Cabecera)
+         */
+        const Header = ({ walletAddress, connectWallet, isLoading }) => {
+            const shortAddress = walletAddress ? `${walletAddress.substring(0, 4)}...${walletAddress.substring(walletAddress.length - 4)}` : null;
+
+            const buttonStyle = walletAddress
+                ? `${KLV_COLORS.darkBg} ${KLV_COLORS.darkHover}`
+                : `${KLV_COLORS.blueBg} ${KLV_COLORS.blueHover}`;
+
+            const buttonContent = walletAddress ? (
+                <>
+                    <CheckCircle size={16} className="mr-2" /> {shortAddress}
+                </>
+            ) : (
+                <>
+                    <Wallet size={16} className="mr-2" /> Conectar Wallet
+                </>
+            );
+
+            return (
+                <nav className="bg-white shadow-lg sticky top-0 z-10">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex justify-between h-16">
+                            {/* Sección Izquierda: Logo y Enlaces */}
+                            <div className="flex items-center">
+                                {/* LOGO BASADO EN ICONO */}
+                                <div className="flex-shrink-0 flex items-center mr-6">
+                                    <HeartHandshake size={24} className={KLV_COLORS.blueText} />
+                                    <span className={`ml-2 text-xl font-extrabold text-${KLV_COLORS.dark}`}>GlobalGive.io</span>
+                                </div>
+
+                                {/* Enlaces de Navegación */}
+                                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                                    <a href="#" className={`text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 ${KLV_COLORS.blueBorder} text-sm font-medium`}>
+                                        Inicio
+                                    </a>
+                                    <a href="#ranking" className="text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium">
+                                        Ranking
+                                    </a>
+                                    <a href="#swap" className="text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium">
+                                        Intercambiar
+                                    </a>
+                                    <a href="#dashboard" className="text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium">
+                                        Dashboard
+                                    </a>
+                                </div>
+                            </div>
+
+                            {/* Sección Derecha: Idiomas y Botón de Wallet */}
+                            <div className="flex items-center space-x-6">
+                                {/* Códigos de Idioma */}
+                                <div className="flex items-center space-x-3 text-xs sm:text-sm">
+                                    <a href="?lang=es" title="Español" className={`${KLV_COLORS.blueText} hover:text-gray-700 font-semibold transition duration-150`}>ES</a>
+                                    <a href="?lang=en" title="English" className={`${KLV_COLORS.blueText} hover:text-gray-700 font-semibold transition duration-150`}>GB</a>
+                                    <a href="?lang=pt" title="Português" className={`${KLV_COLORS.blueText} hover:text-gray-700 font-semibold transition duration-150`}>PT</a>
+                                    <a href="?lang=uk" title="Українська" className={`${KLV_COLORS.blueText} hover:text-gray-700 font-semibold transition duration-150`}>UA</a>
+                                </div>
+
+                                {/* Botón Conectar Wallet */}
+                                <button
+                                    onClick={walletAddress ? null : connectWallet}
+                                    disabled={walletAddress || isLoading}
+                                    className={`px-4 py-2 text-sm font-semibold rounded-lg text-white ${buttonStyle} shadow-lg transition duration-150 ease-in-out flex items-center justify-center ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                                >
+                                    {isLoading ? (
+                                        <Loader2 size={16} className="animate-spin -ml-1 mr-3 text-white" />
+                                    ) : (
+                                        buttonContent
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            );
+        };
+
+        /**
+         * Componente de la Tarjeta de Estado de Conexión
+         */
+        const StatusCard = ({ status, walletAddress }) => {
+            const IconComponent = status.type === 'success' ? CheckCircle : (status.type === 'error' ? AlertTriangle : Info);
+            const cardBorderClass = status.type === 'success' ? 'border-klv-green' : (status.type === 'error' ? 'border-red-600' : 'border-klv-blue');
+            const iconColorClass = status.type === 'success' ? KLV_COLORS.greenText : (status.type === 'error' ? 'text-red-600' : KLV_COLORS.blueText);
+
+            return (
+                <div className={`mb-12 mx-4 p-5 sm:p-6 bg-white rounded-xl shadow-xl border-t-4 ${cardBorderClass} transition duration-300 ease-in-out`}>
+                    <div className="flex items-center space-x-4">
+                        <IconComponent size={24} className={iconColorClass} />
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-900">{status.title}</h2>
+                            <p className="text-gray-500">{status.message}</p>
+                            {walletAddress && (
+                                <p className="mt-1 text-sm font-semibold text-gray-700">Dirección: {walletAddress}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        /**
+         * Componente de Contenido de Proyecto/Tarjeta Individual
+         */
+        const ProjectCard = ({ title, description, icon: Icon, iconColor, linkText, linkColor }) => (
+            <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden">
+                <div className="p-6">
+                    <div className="flex items-center mb-4">
+                        <div className={`bg-${iconColor}/10 text-${iconColor} p-3 rounded-full mr-4`}>
+                            <Icon size={20} />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+                    </div>
+                    <p className="text-gray-600 mb-4">{description}</p>
+                    <a href="#" className={`text-sm font-medium text-${linkColor} hover:text-${linkColor}/80 flex items-center`}>
+                        {linkText} <ArrowRight size={12} className="ml-2" />
+                    </a>
+                </div>
+            </div>
+        );
+
+
+        /**
+         * Componente del Contenido de la Página de Inicio (Home)
+         */
+        const HomeContent = () => (
+            <>
+                {/* Bloque Hero/Título Principal */}
+                <div className="text-center mb-12 px-4">
+                    <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
+                        Proyectos de Transparencia Global
+                    </h1>
+                    <p className="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">
+                        Explora y financia proyectos auditables en tiempo real en KleverChain.
+                    </p>
+                </div>
+
+                {/* CUADRÍCULA DE PROYECTOS */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
+                    
+                    <ProjectCard 
+                        title="Caridad y Ayuda Humanitaria"
+                        description="Dona a causas verificadas. Cada KLV gastado es rastreado en tiempo real, garantizando el 100% de transparencia."
+                        icon={HeartHandshake}
+                        iconColor="klv-blue"
+                        linkText="Ver Proyectos"
+                        linkColor="klv-blue"
+                    />
+                    
+                    <ProjectCard 
+                        title="Inversiones de Impacto Ambiental"
+                        description="Invierte en proyectos de desarrollo sostenible con rendimientos auditables y transparentes. Triple impacto positivo."
+                        icon={Leaf}
+                        iconColor="klv-green"
+                        linkText="Ver Proyectos"
+                        linkColor="klv-green"
+                    />
+                    
+                    <ProjectCard 
+                        title="Desarrollo Tecnológico y Educativo"
+                        description="Financia programas de educación en blockchain y tecnología. Creando la próxima generación de desarrolladores."
+                        icon={GraduationCap}
+                        iconColor="indigo-500" // Usando un color estándar de Tailwind
+                        linkText="Ver Proyectos"
+                        linkColor="indigo-500"
+                    />
+                </div>
+
+                {/* Botón de Call to Action Final */}
+                <div className="text-center mt-16 px-4">
+                    <a href="#" className={`inline-block px-8 py-3 text-lg font-bold text-white ${KLV_COLORS.blueBg} rounded-xl shadow-xl ${KLV_COLORS.blueHover} transition duration-300 transform hover:scale-105`}>
+                        Ver Todos los Proyectos
+                    </a>
+                </div>
+            </>
+        );
+
+        /**
+         * Componente Footer (Pie de Página)
+         */
+        const Footer = () => (
+            <footer className="mt-20 py-8 bg-gray-800">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <p className="text-sm text-gray-400">© {new Date().getFullYear()} GlobalGive.io. Desarrollado sobre KleverChain.</p>
+                </div>
+            </footer>
+        );
+
+        /**
+         * Componente Principal de la Aplicación
+         */
+        const App = () => {
+            const { walletAddress, connectionStatus, connectWallet, isLoading } = useWalletConnection();
+            
+            const currentPage = 'home'; 
+
+            return (
+                <div className="bg-gray-50 font-sans antialiased min-h-screen flex flex-col">
+                    {/* 1. Cabecera */}
+                    <Header
+                        walletAddress={walletAddress}
+                        connectWallet={connectWallet}
+                        isLoading={isLoading}
+                    />
+
+                    {/* 2. Contenido Principal */}
+                    <main className="py-10 flex-grow">
+                        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                            
+                            {/* Tarjeta de Estado (Muestra el estado de la conexión) */}
+                            <StatusCard status={connectionStatus} walletAddress={walletAddress} />
+                            
+                            {/* Contenido de la Página Actual */}
+                            {currentPage === 'home' && <HomeContent />}
+                            
+                        </div>
+                    </main>
+
+                    {/* 3. Footer */}
+                    <Footer />
+                </div>
+            );
+        };
+        
+        // --- INICIALIZACIÓN DE REACT ---
+        // Renderiza el componente principal en el DOM
         const container = document.getElementById('root');
         const root = ReactDOM.createRoot(container);
-        
-        // El componente App ahora está expuesto en window.App al final de App.jsx
-        window.onload = function() {
-            if (typeof window.App !== 'undefined') {
-                // Aquí usamos window.App porque así lo expusimos en App.jsx
-                root.render(<window.App />);
-            } else {
-                console.error("El componente App no fue encontrado después de la carga.");
-                document.getElementById('root').innerHTML = '<div class="text-center p-10 text-red-600">Error: No se pudo cargar la aplicación React.</div>';
-            }
-        };
+        root.render(<App />);
+
     </script>
 </body>
 </html>
