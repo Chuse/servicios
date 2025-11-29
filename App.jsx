@@ -1,15 +1,102 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import {
-  HeartHandshake, Wallet, Info, CheckCircle, AlertTriangle, ArrowRight, Leaf, GraduationCap, Loader2
-} from 'lucide-react';
+// Acceso a Hooks de React desde el objeto global
+const { useState, useEffect, useCallback } = React;
+
+// --- Componentes de Iconos SVG Nativos (Reemplazo de Lucide-React) ---
+// Esto garantiza que el código sea 100% autosuficiente y no cause errores de carga de módulos.
+
+const Icon = ({ children, size = 24, className = "" }) => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width={size} 
+        height={size} 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+        className={className}
+    >
+        {children}
+    </svg>
+);
+
+const HeartHandshake = (props) => (
+    <Icon {...props}>
+        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+        <path d="M12 5L12 18"/>
+        <path d="M16 11H8"/>
+    </Icon>
+);
+
+const Wallet = (props) => (
+    <Icon {...props}>
+        <path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/>
+        <path d="M21 12h-7a2 2 0 0 1-2-2V7"/>
+        <path d="M16 16h2"/>
+    </Icon>
+);
+
+const Info = (props) => (
+    <Icon {...props}>
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M12 16v-4"/>
+        <path d="M12 8h.01"/>
+    </Icon>
+);
+
+const CheckCircle = (props) => (
+    <Icon {...props}>
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+        <path d="M22 4 12 14.01l-3-3"/>
+    </Icon>
+);
+
+const AlertTriangle = (props) => (
+    <Icon {...props}>
+        <path d="M10.29 3.86 1.84 18a2 2 0 0 0 1.71 3h16.89a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <path d="M12 9v4"/>
+        <path d="M12 17h.01"/>
+    </Icon>
+);
+
+const ArrowRight = (props) => (
+    <Icon {...props}>
+        <path d="M5 12h14"/>
+        <path d="m12 5 7 7-7 7"/>
+    </Icon>
+);
+
+const Leaf = (props) => (
+    <Icon {...props}>
+        <path d="M11 20A7 7 0 0 1 9.86 6.13M15.29 11a7 7 0 0 0-4.04-4.04 7 7 0 0 1 1.77-5.5L16 2l-1 2-2 1"/>
+        <path d="M2 20s1.5-1.5 2-2c-.7-.5-1.5-1-2-2L2 20z"/>
+    </Icon>
+);
+
+const GraduationCap = (props) => (
+    <Icon {...props}>
+        <path d="M22 10v6"/>
+        <path d="M12 12 2 7.5l10-4.5 10 4.5zM4.5 15.5l6-3M19.5 15.5l-6-3"/>
+        <path d="M19 18v-6"/>
+        <path d="M5 18v-6"/>
+    </Icon>
+);
+
+const Loader2 = (props) => (
+    <Icon {...props}>
+        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+    </Icon>
+);
+// --- FIN Componentes de Iconos SVG ---
+
 
 // --- Configuración de Colores y Constantes ---
 const KLV_COLORS = {
   green: '#00B894',
   dark: '#1C1C1C',
   blue: '#2152ff',
-  // Definiciones de Tailwind (necesarias para evitar clases dinámicas no detectadas)
-  // Nota: Tailwind necesita ver estas clases completas para generarlas.
+  // Definiciones de Tailwind
   blueText: 'text-[#2152ff]',
   blueBorder: 'border-[#2152ff]',
   blueBg: 'bg-[#2152ff]',
@@ -24,7 +111,7 @@ const MAX_RETRIES = 15;
 const RETRY_DELAY_MS = 250;
 const BOOTSTRAP_DELAY_MS = 1000;
 
-// --- Componentes Reutilizables ---
+// --- Funciones de Lógica ---
 
 /**
  * Hook personalizado para manejar la lógica de conexión de la Klever Wallet.
@@ -115,6 +202,8 @@ const useWalletConnection = () => {
   return { walletAddress, connectionStatus, connectWallet, isLoading };
 };
 
+// --- Componentes de UI ---
+
 /**
  * Componente Header (Cabecera)
  */
@@ -149,7 +238,6 @@ const Header = ({ walletAddress, connectWallet, isLoading }) => {
 
             {/* Enlaces de Navegación */}
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              {/* CORREGIDO: Usar href="#" en lugar de href="javascript:;" */}
               <a href="#" className={`text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 ${KLV_COLORS.blueBorder} text-sm font-medium`}>
                 Inicio
               </a>
@@ -182,7 +270,6 @@ const Header = ({ walletAddress, connectWallet, isLoading }) => {
               className={`px-4 py-2 text-sm font-semibold rounded-lg text-white ${buttonStyle} shadow-lg transition duration-150 ease-in-out flex items-center justify-center ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {isLoading ? (
-                // Usamos el icono Loader2 de Lucide para un spinner nativo de React
                 <Loader2 size={16} className="animate-spin -ml-1 mr-3 text-white" />
               ) : (
                 buttonContent
@@ -199,24 +286,9 @@ const Header = ({ walletAddress, connectWallet, isLoading }) => {
  * Componente de la Tarjeta de Estado de Conexión
  */
 const StatusCard = ({ status, walletAddress }) => {
-  let IconComponent = Info;
-  let borderColor = `border-klv-blue`;
-  let iconColor = KLV_COLORS.blue;
-
-  if (status.type === 'success') {
-    IconComponent = CheckCircle;
-    borderColor = `border-klv-green`;
-    iconColor = KLV_COLORS.green;
-  } else if (status.type === 'error') {
-    IconComponent = AlertTriangle;
-    borderColor = `border-red-600`;
-    iconColor = '#DC2626'; // Red-600
-  }
-
-  // Modificación para asegurar que Tailwind detecte los colores definidos en KLV_COLORS
+  const IconComponent = status.type === 'success' ? CheckCircle : (status.type === 'error' ? AlertTriangle : Info);
   const cardBorderClass = status.type === 'success' ? 'border-klv-green' : (status.type === 'error' ? 'border-red-600' : 'border-klv-blue');
   const iconColorClass = status.type === 'success' ? KLV_COLORS.greenText : (status.type === 'error' ? 'text-red-600' : KLV_COLORS.blueText);
-
 
   return (
     <div className={`mb-12 mx-4 p-5 sm:p-6 bg-white rounded-xl shadow-xl border-t-4 ${cardBorderClass} transition duration-300 ease-in-out`}>
@@ -247,7 +319,6 @@ const ProjectCard = ({ title, description, icon: Icon, iconColor, linkText, link
         <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
       </div>
       <p className="text-gray-600 mb-4">{description}</p>
-      {/* CORREGIDO: Usar href="#" en lugar de href="javascript:;" */}
       <a href="#" className={`text-sm font-medium text-${linkColor} hover:text-${linkColor}/80 flex items-center`}>
         {linkText} <ArrowRight size={12} className="ml-2" />
       </a>
@@ -304,7 +375,6 @@ const HomeContent = () => (
 
     {/* Botón de Call to Action Final */}
     <div className="text-center mt-16 px-4">
-      {/* CORREGIDO: Usar href="#" en lugar de href="javascript:;" */}
       <a href="#" className={`inline-block px-8 py-3 text-lg font-bold text-white ${KLV_COLORS.blueBg} rounded-xl shadow-xl ${KLV_COLORS.blueHover} transition duration-300 transform hover:scale-105`}>
         Ver Todos los Proyectos
       </a>
@@ -329,7 +399,6 @@ const Footer = () => (
 const App = () => {
   const { walletAddress, connectionStatus, connectWallet, isLoading } = useWalletConnection();
   
-  // En un entorno de producción, aquí se manejaría la navegación (e.g., con un router)
   const currentPage = 'home'; 
 
   return (
@@ -360,4 +429,5 @@ const App = () => {
   );
 };
 
-export default App;
+// Exportamos el componente para que el script de index.html lo pueda encontrar
+window.App = App;
