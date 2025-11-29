@@ -3,368 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlobalGive.io - Proyectos de Transparencia</title>
-    
-    <!-- Tailwind CSS CDN para el diseño moderno -->
+    <title>GlobalGive.io - DApp en KleverChain</title>
+    <!-- Incluye Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Configuración personalizada de Tailwind -->
+    <!-- Configuración para colores personalizados de Klever Chain en Tailwind -->
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              'klv-green': '#00B894', // Color Klever o similar
+              'klv-green': '#00B894',
               'klv-dark': '#1C1C1C',
               'klv-blue': '#2152ff',
-            },
-            fontFamily: {
-                sans: ['Inter', 'sans-serif'],
             }
           }
         }
       }
     </script>
-    
-    <!-- Iconos: Font Awesome (Obligatorio para el logo basado en icono) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <!-- Fuente Inter (para un aspecto moderno) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        /* Estilos menores */
-        .flag-text {
-            font-size: 0.75rem; /* text-xs */
-        }
-    </style>
-
+    <!-- Importamos React y ReactDOM desde CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Importamos Babel para transpilar el JSX en el navegador -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- SE ELIMINARON las cargas de Lucide Icons CDN ya que los iconos ahora son SVGs nativos en App.jsx -->
 </head>
-<body class="bg-gray-50 font-sans antialiased">
+<body class="bg-gray-50">
 
-    <!-- ============================================== -->
-    <!-- BARRA DE NAVEGACIÓN SUPERIOR (Tailwind) -->
-    <!-- ============================================== -->
-    <nav class="bg-white shadow-lg sticky top-0 z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                
-                <!-- Sección Izquierda: Logo, Nombre y Enlaces -->
-                <div class="flex items-center">
-                    
-                    <!-- LOGO BASADO EN ICONO (Máxima Visibilidad Garantizada) -->
-                    <div class="flex-shrink-0 flex items-center mr-6">
-                        <!-- Icono de Corazón/Conexión en azul KLV -->
-                        <i class="fas fa-hand-holding-heart text-2xl text-klv-blue"></i>
-                        <!-- Nombre de la marca al lado del logo en color oscuro para contraste -->
-                        <span class="ml-2 text-xl font-extrabold text-klv-dark">GlobalGive.io</span>
-                    </div>
-                    
-                    <!-- Enlaces de Navegación -->
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="#" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-klv-blue text-sm font-medium">
-                            Inicio
-                        </a>
-                        <a href="/ranking" class="text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium">
-                            Ranking
-                        </a>
-                        <a href="/swap" class="text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium">
-                            Intercambiar
-                        </a>
-                        <a href="/dashboard" class="text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium">
-                            Dashboard
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Sección Derecha: Idiomas (Texto) y Botón de Wallet -->
-                <div class="flex items-center space-x-6"> 
-                    <!-- Códigos de Idioma (Texto) -->
-                    <div class="flex items-center space-x-3">
-                        <a href="?lang=es" title="Español" class="text-gray-700 hover:text-klv-blue font-semibold flag-text transition duration-150">ES</a>
-                        <a href="?lang=en" title="English" class="text-gray-700 hover:text-klv-blue font-semibold flag-text transition duration-150">GB</a>
-                        <a href="?lang=pt" title="Português" class="text-gray-700 hover:text-klv-blue font-semibold flag-text transition duration-150">PT</a>
-                        <a href="?lang=uk" title="Українська" class="text-gray-700 hover:text-klv-blue font-semibold flag-text transition duration-150">UA</a>
-                    </div>
+    <!-- 
+        El único elemento en el body.
+        React usará este div con el ID 'root' para inyectar toda la aplicación (App.jsx).
+    -->
+    <div id="root">
+        <!-- Contenido de fallback mientras se carga React -->
+        <div class="text-center p-10 text-gray-500">Cargando aplicación...</div>
+    </div>
 
-                    <!-- Botón Conectar Wallet -->
-                    <button id="connect-wallet-btn" onclick="connectWallet()" class="px-4 py-2 text-sm font-semibold rounded-lg text-white bg-klv-blue hover:bg-klv-blue/90 shadow-lg transition duration-150 ease-in-out">
-                        <i class="fas fa-wallet mr-2"></i> Conectar Wallet
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-    
-    <!-- ============================================== -->
-    <!-- CONTENIDO PRINCIPAL -->
-    <!-- ============================================== -->
-    <main class="py-10">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
-            <!-- Bloque Hero/Título Principal -->
-            <div class="text-center mb-12 px-4">
-                <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 leading-tight">
-                    Proyectos de Transparencia Global
-                </h1>
-                <p class="mt-3 text-lg text-gray-600 max-w-2xl mx-auto">
-                    Explora y financia proyectos auditables en tiempo real en KleverChain.
-                </p>
-            </div>
+    <!-- 
+        Importamos nuestro código de la aplicación (App.jsx).
+        El atributo type="text/babel" le indica a Babel que compile este script.
+    -->
+    <script type="text/babel" src="App.jsx"></script>
 
-            <!-- Tarjeta de Estado de Conexión (Actualizada) -->
-            <div id="initial-status-card" class="mb-12 mx-4 p-5 sm:p-6 bg-white rounded-xl shadow-xl border-t-4 border-klv-blue transition duration-300 ease-in-out">
-                <div class="flex items-center space-x-4">
-                    <i class="fas fa-info-circle text-2xl text-klv-blue"></i>
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900">Integración de Billetera Exitosa</h2>
-                        <p class="text-gray-500">La lógica de conexión está cargada. Haz clic en el botón "Conectar Wallet" en la barra superior para iniciar la conexión.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CUADRÍCULA DE PROYECTOS (Similar a la Imagen 2) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
-                
-                <!-- Tarjeta 1: Proyectos de Caridad -->
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-klv-blue/10 text-klv-blue p-3 rounded-full mr-4">
-                                <i class="fas fa-hand-holding-heart fa-lg"></i>
-                            </div>
-                            <h3 class="text-xl font-semibold text-gray-900">Caridad y Ayuda Humanitaria</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Dona a causas verificadas. Cada KLV gastado es rastreado en tiempo real, garantizando el 100% de transparencia.</p>
-                        <a href="javascript:;" class="text-sm font-medium text-klv-blue hover:text-klv-blue/80 flex items-center">
-                            Ver Proyectos <i class="fas fa-arrow-right text-xs ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Tarjeta 2: Inversiones Sociales -->
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-klv-green/10 text-klv-green p-3 rounded-full mr-4">
-                                <i class="fas fa-seedling fa-lg"></i>
-                            </div>
-                            <h3 class="text-xl font-semibold text-gray-900">Inversiones de Impacto Ambiental</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Invierte en proyectos de desarrollo sostenible con rendimientos auditables y transparentes. Triple impacto positivo.</p>
-                        <a href="javascript:;" class="text-sm font-medium text-klv-green hover:text-klv-green/80 flex items-center">
-                            Ver Proyectos <i class="fas fa-arrow-right text-xs ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Tarjeta 3: Desarrollo Educativo -->
-                <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition duration-300 overflow-hidden">
-                    <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <div class="bg-indigo-500/10 text-indigo-500 p-3 rounded-full mr-4">
-                                <i class="fas fa-graduation-cap fa-lg"></i>
-                            </div>
-                            <h3 class="text-xl font-semibold text-gray-900">Desarrollo Tecnológico y Educativo</h3>
-                        </div>
-                        <p class="text-gray-600 mb-4">Financia programas de educación en blockchain y tecnología. Creando la próxima generación de desarrolladores.</p>
-                        <a href="javascript:;" class="text-sm font-medium text-indigo-500 hover:text-indigo-500/80 flex items-center">
-                            Ver Proyectos <i class="fas fa-arrow-right text-xs ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                
-            </div>
-            
-            <!-- Botón de Call to Action Final -->
-            <div class="text-center mt-16 px-4">
-                <a href="javascript:;" class="inline-block px-8 py-3 text-lg font-bold text-white bg-klv-blue rounded-xl shadow-xl hover:bg-klv-blue/90 transition duration-300 transform hover:scale-105">
-                    Ver Todos los Proyectos
-                </a>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- FOOTER SIMPLE -->
-    <footer class="mt-20 py-8 bg-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm text-gray-400">© <script>document.write(new Date().getFullYear())</script> GlobalGive.io. Desarrollado sobre KleverChain.</p>
-        </div>
-    </footer>
-
-
-    <!-- ============================================== -->
-    <!-- SCRIPT DE CONEXIÓN DE WALLET (INTEGRADO) -->
-    <!-- ============================================== -->
-    <script>
-        /**
-         * Lógica de conexión Klever Wallet (adaptada para el nuevo diseño Tailwind)
-         */
-        const MAX_RETRIES = 15;
-        const RETRY_DELAY_MS = 250;
-        const BOOTSTRAP_DELAY_MS = 1000;
+    <script type="text/babel">
+        // Este bloque de script se asegura de que cuando el DOM esté listo, 
+        // se renderice el componente principal de React (App) en el div 'root'.
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
         
-        const CONNECT_BUTTON = document.getElementById('connect-wallet-btn');
-        const STATUS_CARD = document.getElementById('initial-status-card');
-
-        /**
-         * Función utilitaria para actualizar el estado visual de la tarjeta flotante y el botón.
-         */
-        function updateUI(title, message, type, address = null) {
-            if (STATUS_CARD) {
-                let iconClass = 'fas fa-info-circle text-klv-blue';
-                let borderColor = 'border-klv-blue';
-                let textColor = 'text-klv-blue';
-
-                if (type === 'success') {
-                    iconClass = 'fas fa-check-circle text-klv-green';
-                    borderColor = 'border-klv-green';
-                    textColor = 'text-klv-green';
-                } else if (type === 'error') {
-                    iconClass = 'fas fa-exclamation-triangle text-red-600';
-                    borderColor = 'border-red-600';
-                    textColor = 'text-red-600';
-                }
-                
-                // Actualizar la tarjeta flotante
-                STATUS_CARD.className = `mb-12 mx-4 p-5 sm:p-6 bg-white rounded-xl shadow-xl border-t-4 ${borderColor} transition duration-300 ease-in-out`;
-                STATUS_CARD.innerHTML = `
-                    <div class="flex items-center space-x-4">
-                        <i class="${iconClass} text-2xl ${textColor}"></i>
-                        <div>
-                            <h2 class="text-xl font-bold text-gray-900">${title}</h2>
-                            <p class="text-gray-500">${message}</p>
-                            ${address ? `<p class="mt-1 text-sm font-semibold text-gray-700">Dirección: ${address}</p>` : ''}
-                        </div>
-                    </div>
-                `;
-            }
-            
-            if (CONNECT_BUTTON) {
-                // 2. Actualizar el botón
-                CONNECT_BUTTON.className = 'px-4 py-2 text-sm font-semibold rounded-lg text-white shadow-lg transition duration-150 ease-in-out';
-
-                if (type === 'success' && address) {
-                    const shortAddress = `${address.substring(0, 4)}...${address.substring(address.length - 4)}`;
-                    CONNECT_BUTTON.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${shortAddress}`;
-                    CONNECT_BUTTON.classList.add('bg-klv-dark', 'hover:bg-klv-dark/80');
-                    CONNECT_BUTTON.classList.remove('bg-klv-blue');
-                    CONNECT_BUTTON.disabled = true;
-                } else if (type === 'error') {
-                    CONNECT_BUTTON.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> Error al Conectar`;
-                    CONNECT_BUTTON.classList.add('bg-red-600', 'hover:bg-red-600/80');
-                    CONNECT_BUTTON.classList.remove('bg-klv-blue');
-                    CONNECT_BUTTON.disabled = false;
-                } else {
-                    // Estado inicial/información
-                    CONNECT_BUTTON.innerHTML = `<i class="fas fa-wallet mr-2"></i> Conectar Wallet`;
-                    CONNECT_BUTTON.classList.add('bg-klv-blue', 'hover:bg-klv-blue/90');
-                    CONNECT_BUTTON.classList.remove('bg-klv-dark', 'bg-red-600');
-                    CONNECT_BUTTON.disabled = false;
-                }
-            }
-        }
-
-
-        /**
-         * Espera de forma asíncrona hasta que window.kleverWeb esté disponible.
-         */
-        async function waitForKleverWeb() {
-            // 1. Espera inicial para dar tiempo a la extensión
-            await new Promise(resolve => setTimeout(resolve, BOOTSTRAP_DELAY_MS));
-            
-            console.log(`[KleverChain] Iniciando búsqueda de la extensión Klever (${MAX_RETRIES} intentos)...`);
-
-            for (let i = 0; i < MAX_RETRIES; i++) {
-                if (window.kleverWeb && typeof window.kleverWeb.getAccounts === 'function') {
-                    console.log(`[KleverChain] Extensión detectada en el intento ${i + 1}.`);
-                    return true;
-                }
-                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
-            }
-            
-            console.error('[KleverChain] ERROR CRÍTICO: La extensión Klever no fue detectada después de todos los reintentos.');
-            return false;
-        }
-
-        /**
-         * Intenta conectar a la Klever Wallet.
-         */
-        async function connectWallet() {
-            if (!CONNECT_BUTTON) return;
-            
-            CONNECT_BUTTON.disabled = true;
-            updateUI('Buscando Extensión', 'Buscando Klever Wallet. Puede tomar un momento...', 'info');
-
-            try {
-                if (!await waitForKleverWeb()) {
-                    throw new Error("Extensión Klever Wallet no detectada. Por favor, asegúrate de que esté instalada, activa y la página se haya recargado.");
-                }
-
-                updateUI('Solicitando Conexión', 'Por favor, aprueba la conexión en la ventana emergente de Klever Wallet.', 'info');
-                
-                const accounts = await window.kleverWeb.getAccounts();
-
-                if (accounts && accounts.length > 0) {
-                    const walletAddress = accounts[0].address;
-                    
-                    // Notificar al backend sobre la conexión exitosa (opcional)
-                    fetch('/api/user/connect', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ address: walletAddress })
-                    }).then(response => {
-                        if (response.ok) {
-                            console.log("Dirección de Wallet enviada al servidor.");
-                        } else {
-                             console.error("Fallo al enviar la dirección al servidor.");
-                        }
-                    }).catch(e => console.error("Error al comunicarse con el servidor:", e));
-
-
-                    updateUI(
-                        '¡Conexión Exitosa!',
-                        `Dirección conectada.`,
-                        'success',
-                        walletAddress
-                    );
-
-                } else {
-                    updateUI(
-                        'Conexión Rechazada', 
-                        'El usuario canceló la solicitud o no seleccionó una cuenta.', 
-                        'error'
-                    );
-                    CONNECT_BUTTON.disabled = false;
-                }
-
-            } catch (error) {
-                console.error('[KleverChain] Error al conectar la Wallet:', error);
-                
-                const displayMessage = (error.message.includes('Extensión Klever Wallet no detectada')) ?
-                    'No se pudo encontrar la extensión. Verifica si está instalada y vuelve a cargar la página.' :
-                    `Ocurrió un error inesperado. Mensaje: ${error.message}`;
-                    
-                updateUI(
-                    'Fallo de Conexión', 
-                    displayMessage, 
-                    'error'
-                );
-                CONNECT_BUTTON.disabled = false;
-            }
-        }
-
-        // Inicializar el botón y el estado al cargar la ventana
+        // El componente App ahora está expuesto en window.App al final de App.jsx
         window.onload = function() {
-            if (CONNECT_BUTTON) {
-                CONNECT_BUTTON.addEventListener('click', connectWallet);
-                updateUI('Listo para Conectar', 'Haz clic en "Conectar Wallet" para buscar la extensión Klever.', 'info');
+            if (typeof window.App !== 'undefined') {
+                // Aquí usamos window.App porque así lo expusimos en App.jsx
+                root.render(<window.App />);
             } else {
-                console.error("Botón 'connect-wallet-btn' no encontrado.");
+                console.error("El componente App no fue encontrado después de la carga.");
+                document.getElementById('root').innerHTML = '<div class="text-center p-10 text-red-600">Error: No se pudo cargar la aplicación React.</div>';
             }
         };
     </script>
-
 </body>
 </html>
