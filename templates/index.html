@@ -26,17 +26,16 @@
       }
     </script>
     
-    <!-- Iconos: Font Awesome (Necesario para otros iconos) -->
+    <!-- Iconos: Font Awesome (Obligatorio para el logo basado en icono) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <!-- Fuente Inter (para un aspecto moderno) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* Estilo para los emojis de bandera para que parezcan más un icono */
-        .flag-emoji {
-            font-size: 1.25rem; /* Ajuste del tamaño del emoji */
-            line-height: 1;
+        /* Estilos menores */
+        .flag-text {
+            font-size: 0.75rem; /* text-xs */
         }
     </style>
 
@@ -49,12 +48,18 @@
     <nav class="bg-white shadow-lg sticky top-0 z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
-                <!-- Logo y Nombre de la App -->
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <!-- RUTA DEL LOGO: Asegúrate de que el archivo 'globalgive_logo.png' exista en static/img/ -->
-                        <img class="h-8 w-auto mr-2" src="{{ url_for('static', filename='img/globalgive_logo.png') }}" alt="GlobalGive.io Logo">
+                
+                <!-- Sección Izquierda: Logo, Nombre y Enlaces -->
+                <div class="flex items-center">
+                    
+                    <!-- LOGO BASADO EN ICONO (Máxima Visibilidad Garantizada) -->
+                    <div class="flex-shrink-0 flex items-center mr-6">
+                        <!-- Icono de Corazón/Conexión en azul KLV -->
+                        <i class="fas fa-hand-holding-heart text-2xl text-klv-blue"></i>
+                        <!-- Nombre de la marca al lado del logo en color oscuro para contraste -->
+                        <span class="ml-2 text-xl font-extrabold text-klv-dark">GlobalGive.io</span>
                     </div>
+                    
                     <!-- Enlaces de Navegación -->
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
                         <a href="#" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-klv-blue text-sm font-medium">
@@ -72,24 +77,17 @@
                     </div>
                 </div>
                 
-                <!-- Banderas y Botón de Wallet -->
-                <div class="flex items-center space-x-4">
-                    <!-- Iconos de Banderas de Idioma usando EMOJIS (solución robusta) -->
-                    <div class="flex space-x-3">
-                        <a href="?lang=es" title="Español" class="hover:opacity-75 transition duration-150">
-                            <span class="flag-emoji" role="img" aria-label="Bandera de España">🇪🇸</span>
-                        </a>
-                        <a href="?lang=en" title="English" class="hover:opacity-75 transition duration-150">
-                            <span class="flag-emoji" role="img" aria-label="Bandera de Reino Unido">🇬🇧</span>
-                        </a>
-                        <a href="?lang=pt" title="Português" class="hover:opacity-75 transition duration-150">
-                            <span class="flag-emoji" role="img" aria-label="Bandera de Portugal">🇵🇹</span>
-                        </a>
-                        <a href="?lang=uk" title="Українська" class="hover:opacity-75 transition duration-150">
-                            <span class="flag-emoji" role="img" aria-label="Bandera de Ucrania">🇺🇦</span>
-                        </a>
+                <!-- Sección Derecha: Idiomas (Texto) y Botón de Wallet -->
+                <div class="flex items-center space-x-6"> 
+                    <!-- Códigos de Idioma (Texto) -->
+                    <div class="flex items-center space-x-3">
+                        <a href="?lang=es" title="Español" class="text-gray-700 hover:text-klv-blue font-semibold flag-text transition duration-150">ES</a>
+                        <a href="?lang=en" title="English" class="text-gray-700 hover:text-klv-blue font-semibold flag-text transition duration-150">GB</a>
+                        <a href="?lang=pt" title="Português" class="text-gray-700 hover:text-klv-blue font-semibold flag-text transition duration-150">PT</a>
+                        <a href="?lang=uk" title="Українська" class="text-gray-700 hover:text-klv-blue font-semibold flag-text transition duration-150">UA</a>
                     </div>
 
+                    <!-- Botón Conectar Wallet -->
                     <button id="connect-wallet-btn" onclick="connectWallet()" class="px-4 py-2 text-sm font-semibold rounded-lg text-white bg-klv-blue hover:bg-klv-blue/90 shadow-lg transition duration-150 ease-in-out">
                         <i class="fas fa-wallet mr-2"></i> Conectar Wallet
                     </button>
