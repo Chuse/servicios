@@ -1,3 +1,6 @@
+¡Por supuesto! Aquí tienes el contenido del archivo templates/index.html con el logo, las banderas y el diseño Tailwind, en texto plano.
+
+Contenido del templates/index.html (Texto Plano)
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -44,7 +47,8 @@
                 <!-- Logo y Nombre de la App -->
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <span class="text-xl font-extrabold text-klv-dark">GlobalGive<span class="text-klv-blue">.io</span></span>
+                        <!-- RUTA DEL LOGO: Asegúrate de que el archivo 'globalgive_logo.png' exista en static/img/ -->
+                        <img class="h-8 w-auto mr-2" src="{{ url_for('static', filename='img/globalgive_logo.png') }}" alt="GlobalGive.io Logo">
                     </div>
                     <!-- Enlaces de Navegación -->
                     <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -63,8 +67,24 @@
                     </div>
                 </div>
                 
-                <!-- Botón de Wallet -->
-                <div class="flex items-center">
+                <!-- Banderas y Botón de Wallet -->
+                <div class="flex items-center space-x-4">
+                    <!-- Iconos de Banderas de Idioma -->
+                    <div class="flex space-x-2">
+                        <a href="?lang=es" title="Español" class="text-gray-500 hover:text-gray-700 transition duration-150">
+                            <i class="fas fa-flag-usa"></i> <!-- Usamos fa-flag-usa como bandera genérica para español (US) -->
+                        </a>
+                        <a href="?lang=en" title="English" class="text-gray-500 hover:text-gray-700 transition duration-150">
+                            <i class="fas fa-flag-gbp"></i> <!-- Bandera de Reino Unido (Inglés) -->
+                        </a>
+                        <a href="?lang=pt" title="Português" class="text-gray-500 hover:text-gray-700 transition duration-150">
+                            <i class="fas fa-flag-pt"></i> <!-- Bandera de Portugal -->
+                        </a>
+                        <a href="?lang=uk" title="Українська" class="text-gray-500 hover:text-gray-700 transition duration-150">
+                            <i class="fas fa-flag-ua"></i> <!-- Bandera de Ucrania -->
+                        </a>
+                    </div>
+
                     <button id="connect-wallet-btn" onclick="connectWallet()" class="px-4 py-2 text-sm font-semibold rounded-lg text-white bg-klv-blue hover:bg-klv-blue/90 shadow-lg transition duration-150 ease-in-out">
                         <i class="fas fa-wallet mr-2"></i> Conectar Wallet
                     </button>
