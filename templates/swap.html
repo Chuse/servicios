@@ -3,14 +3,14 @@
 {% block title %}Intercambiar/Donar KLV{% endblock %}
 
 {% block content %}
-    <!-- Contenedor del Widget de Donación (React) -->
-    <div id="root" class="py-12 flex items-center justify-center min-h-screen-75">
-        <div class="text-center p-10 text-xl font-mono text-klv-blue animate-pulse">
-            Cargando aplicación Widget...
-        </div>
-    </div>
-
-    <!-- Las dependencias de Frontend para el Widget (solo se cargan aquí) -->
+    <!-- 
+    IMPORTANTE: La ubicación de los scripts de React/Babel en el bloque 'content'
+    garantiza que se carguen ANTES del script principal en 'javascripts'.
+    -->
+    
+    <!-- Dependencias de Frontend para el Widget -->
+    
+    <!-- 1. Carga de Tailwind CSS (OK) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       // Configuración de colores personalizados de Tailwind CSS
@@ -26,15 +26,26 @@
         }
       }
     </script>
-    <!-- Dependencias de React y Babel para el JSX -->
+    
+    <!-- 2. Dependencias de React y Babel (CRÍTICO: Orden de Carga) -->
+    <!-- React Core -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react.development.js"></script>
+    <!-- React DOM (IMPORTANTE: Corregido y debe cargar antes de Babel) -->
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script> 
+    <!-- Babel Standalone (Último en cargar) -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Contenedor del Widget de Donación (React) -->
+    <div id="root" class="py-12 flex items-center justify-center min-h-screen-75">
+        <div class="text-center p-10 text-xl font-mono text-klv-blue animate-pulse">
+            Cargando aplicación Widget...
+        </div>
+    </div>
     
 {% endblock %}
 
 {% block javascripts %}
-    <!-- Lógica de la aplicación React (Widget de Donación) -->
+    <!-- Lógica de la aplicación React (Widget de Donación) - Se ejecuta DESPUÉS de las dependencias -->
     <script type="text/babel">
         // Importación de funciones necesarias desde los módulos globales
         const { useState, useEffect } = React;
