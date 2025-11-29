@@ -1,60 +1,73 @@
 <!-- ========================================================= -->
-<!-- Cabecera / Navbar: Rutas de Soft UI corregidas con Jinja2 -->
-<!-- La estructura de esta sección se carga desde templates/sections/header.html -->
+<!-- SIDEBAR (Barra Lateral) - CRUCIAL para el layout de Soft UI -->
+<!-- Este elemento DEBE tener el ID "sidenav-main" -->
+<!-- ========================================================= -->
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs fixed-start bg-white" id="sidenav-main">
+    <div class="sidenav-header">
+        <!-- Puedes usar tu logo aquí -->
+        <a class="navbar-brand m-0" href="/">
+            <span class="ms-1 font-weight-bold">GlobalGive.io Admin</span>
+        </a>
+    </div>
+    <hr class="horizontal dark mt-0">
+    <div class="collapse navbar-collapse w-auto h-auto" id="sidenav-collapse-main">
+        <ul class="navbar-nav">
+            <!-- Ejemplo de enlaces para el sidebar (puedes completarlos) -->
+            <li class="nav-item">
+                <a class="nav-link active" href="/dashboard">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-chart-bar text-primary text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/swap">
+                    <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-exchange-alt text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Intercambiar / Donar</span>
+                </a>
+            </li>
+            <li class="nav-item mt-3">
+                <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Cuenta</h6>
+            </li>
+        </ul>
+    </div>
+</aside>
+
+
+<!-- ========================================================= -->
+<!-- NAVBAR SUPERIOR (Cabecera) - Se ajusta al layout -->
 <!-- ========================================================= -->
 
-<nav class="navbar navbar-expand-lg blur blur-rounded top-0 z-index-3 shadow position-absolute my-3 py-2 start-0 end-0 mx-4">
-    <div class="container-fluid pe-0">
-        <!-- Logo y Título Principal -->
-        <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="/">
-            <i class="fas fa-globe me-2 text-info"></i> GlobalGive.io
-        </a>
-        
-        <!-- Botón de Menú (para móviles) -->
-        <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon mt-2">
-                <span class="navbar-toggler-bar bar1"></span>
-                <span class="navbar-toggler-bar bar2"></span>
-                <span class="navbar-toggler-bar bar3"></span>
-            </span>
-            <span class="sr-only">Toggle navigation</span>
-        </button>
+<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+    <div class="container-fluid py-1 px-3">
+        <!-- Breadcrumb / Título de Página (Añadido para completar el layout del dashboard) -->
+        <nav aria-label="breadcrumb">
+            <h6 class="font-weight-bolder mb-0">{% block title_tag %}{% endblock %}</h6>
+        </nav>
 
-        <!-- Contenido de la Navegación -->
-        <div class="collapse navbar-collapse w-100 pt-3 pb-2 py-lg-0" id="navigation">
-            <ul class="navbar-nav mx-auto">
-                <!-- Enlaces de Navegación -->
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center me-2 active" aria-current="page" href="/">
-                        <i class="fa fa-th-list opacity-6 me-1"></i>
-                        <span>Proyectos</span>
+        <!-- Botón de Menú (para móviles) y Conexión de Wallet -->
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navigation">
+            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                <!-- Barra de búsqueda si es necesaria -->
+            </div>
+            <ul class="navbar-nav justify-content-end">
+                <!-- Enlaces de Navegación (Solo para tablet/desktop si el sidebar no se usa) -->
+                <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+                    <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                        <div class="sidenav-toggler-inner">
+                            <i class="sidenav-toggler-line"></i>
+                            <i class="sidenav-toggler-line"></i>
+                            <i class="sidenav-toggler-line"></i>
+                        </div>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center me-2" href="/ranking">
-                        <i class="fa fa-trophy opacity-6 me-1"></i>
-                        <span>Ranking</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center me-2" href="/swap">
-                        <i class="fa fa-exchange-alt opacity-6 me-1"></i>
-                        <span>Intercambiar</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center me-2" href="/dashboard">
-                        <i class="fa fa-user opacity-6 me-1"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-            </ul>
-
-            <!-- Elemento de la Derecha: Conexión de Wallet -->
-            <ul class="navbar-nav d-lg-block d-none">
-                <li class="nav-item d-flex align-items-center me-3">
-                    <!-- CRÍTICO: Este ID es esencial para la funcionalidad de la billetera -->
-                    <button id="connect-wallet-btn" class="btn btn-sm bg-gradient-info mb-0 d-none d-lg-block">Conectar Wallet</button>
+                
+                <!-- CRÍTICO: Este ID es esencial para la funcionalidad de la billetera -->
+                <li class="nav-item d-flex align-items-center ms-3">
+                    <button id="connect-wallet-btn" class="btn btn-sm bg-gradient-info mb-0 d-lg-block">Conectar Wallet</button>
                 </li>
             </ul>
         </div>
