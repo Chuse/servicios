@@ -1,42 +1,56 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}GlobalGive.io{% endblock %}</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-    <!-- Incluye aquí los enlaces CSS comunes (Bootstrap/Soft UI) si los usas. -->
-    <!-- Como ejemplo, voy a incluir un enlace a la hoja de estilos base que podría estar usando Soft UI. -->
-    <!-- <link href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" /> -->
+    <!-- Bloque de Título: Cada página lo sobrescribe (e.g., {% block title %}Ranking{% endblock %}) -->
+    <title>{% block title %}GlobalGive.io - Transparencia y Donaciones{% endblock %}</title>
 
+    <!-- Fuente Inter (si se usa Soft UI/Bootstrap) -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    
+    <!-- Iconos Font Awesome (Necesario para la cabecera) -->
+    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    
+    <!-- Carga de CSS Común (Asumiendo Soft UI Dashboard) -->
+    <!-- Asegúrate de tener los archivos CSS en static/css/ -->
+    <link id="pagestyle" href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" />
+    
     <!-- Bloque para CSS adicional específico de cada página -->
     {% block stylesheets %}{% endblock %}
 
 </head>
 <body class="g-sidenav-show bg-gray-100">
 
-    <!-- 1. Cabecera (Reutilizable) -->
+    <!-- 1. Cabecera (Se incluye templates/sections/header.html) -->
+    <!-- Contiene la barra de navegación y el botón de conectar wallet -->
     {% include 'sections/header.html' %}
 
     <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg">
-        <!-- Bloque principal de contenido (cada página lo sobrescribe) -->
+        <!-- Contenido Específico de la Página -->
+        <!-- Cada plantilla (e.g., swap.html) debe definir su contenido dentro de este bloque -->
         {% block content %}
         {% endblock %}
     </main>
 
-    <!-- 2. Pie de página (Reutilizable) -->
+    <!-- 2. Pie de página (Se incluye templates/sections/footer.html) -->
     {% include 'sections/footer.html' %}
 
-    <!-- Incluye aquí los scripts JS comunes (Bootstrap, Popper, etc.) -->
-    <!-- <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script> -->
-    <!-- <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script> -->
-
-    <!-- Script de Conexión de Wallet (wallet_connection.js) -->
-    <!-- Deberías usar la versión que usa Bootstrap/Soft UI en una aplicación real. -->
-    <!-- Por ahora, mantenemos la referencia al archivo JS que maneja la lógica de Klever -->
-    <!-- <script src="static/js/wallet_connection.js"></script> -->
+    <!-- Scripts JS Comunes (Soft UI/Bootstrap) -->
+    <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plugins/smooth-scrollbar.min.js') }}"></script>
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
     
-    <!-- Bloque para JavaScript específico de cada página -->
+    <!-- Script de Conexión de Wallet (wallet_connection.js, requerido por header.html) -->
+    <script src="{{ url_for('static', filename='js/wallet_connection.js') }}"></script>
+
+    <!-- Script principal de la plantilla (Soft UI) -->
+    <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js') }}"></script>
+
+    <!-- Bloque para JavaScript adicional específico de cada página -->
     {% block javascripts %}{% endblock %}
 
 </body>
