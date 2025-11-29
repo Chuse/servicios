@@ -4,53 +4,39 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-    <!-- Bloque de Título: Cada página lo sobrescribe (e.g., {% block title %}Ranking{% endblock %}) -->
-    <title>{% block title %}GlobalGive.io - Transparencia y Donaciones{% endblock %}</title>
+    <title>{% block title %}GlobalGive.io{% endblock %}</title>
 
-    <!-- Fuente Inter (si se usa Soft UI/Bootstrap) -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    
-    <!-- Iconos Font Awesome (Necesario para la cabecera) -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     
-    <!-- Carga de CSS Común (Asumiendo Soft UI Dashboard) -->
-    <!-- Asegúrate de tener los archivos CSS en static/css/ -->
+    <!-- CSS - Carga de estilos comunes (Soft UI) -->
     <link id="pagestyle" href="{{ url_for('static', filename='css/soft-ui-dashboard.css') }}" rel="stylesheet" />
     
-    <!-- Bloque para CSS adicional específico de cada página -->
     {% block stylesheets %}{% endblock %}
 
 </head>
 <body class="g-sidenav-show bg-gray-100">
 
-    <!-- 1. Cabecera (Se incluye templates/sections/header.html) -->
-    <!-- Contiene la barra de navegación y el botón de conectar wallet -->
-    {% include 'sections/header.html' %}
+    <!-- 1. CABECERA: COMENTADA TEMPORALMENTE PARA DEBUG 500 -->
+    <!-- {% include 'sections/header.html' %} -->
+    <p style="text-align:center; color:blue; font-size: 16px; margin-top: 10px;">[DEBUG: Cabecera Desactivada]</p>
 
     <main class="main-content position-relative max-height-vh-100 h-100 mt-1 border-radius-lg">
-        <!-- Contenido Específico de la Página -->
-        <!-- Cada plantilla (e.g., swap.html) debe definir su contenido dentro de este bloque -->
+        <!-- Contenido Específico de la Página (el widget de swap) -->
         {% block content %}
         {% endblock %}
     </main>
 
-    <!-- 2. Pie de página (Se incluye templates/sections/footer.html) -->
-    {% include 'sections/footer.html' %}
+    <!-- 2. PIE DE PÁGINA: COMENTADO TEMPORALMENTE PARA DEBUG 500 -->
+    <!-- {% include 'sections/footer.html' %} -->
+    <p style="text-align:center; color:blue; font-size: 16px; margin-bottom: 10px;">[DEBUG: Pie de página Desactivado]</p>
 
-    <!-- Scripts JS Comunes (Soft UI/Bootstrap) -->
+    <!-- Scripts JS Comunes -->
     <script src="{{ url_for('static', filename='js/core/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/core/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/plugins/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/plugins/smooth-scrollbar.min.js') }}"></script>
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
-    
-    <!-- Script de Conexión de Wallet (wallet_connection.js, requerido por header.html) -->
+    <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/wallet_connection.js') }}"></script>
 
-    <!-- Script principal de la plantilla (Soft UI) -->
-    <script src="{{ url_for('static', filename='js/soft-ui-dashboard.min.js') }}"></script>
-
-    <!-- Bloque para JavaScript adicional específico de cada página -->
     {% block javascripts %}{% endblock %}
 
 </body>
