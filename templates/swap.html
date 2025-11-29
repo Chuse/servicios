@@ -11,7 +11,6 @@
     </div>
 
     <!-- Las dependencias de Frontend para el Widget (solo se cargan aquí) -->
-    <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       // Configuración de colores personalizados de Tailwind CSS
@@ -92,3 +91,165 @@
         // --------------------------------------------------------------------------------
         const DonationWidget = ({ walletAddress, klvBalance }) => {
             const [amount, setAmount] = useState('');
+            const [isDonation, setIsDonation] = useState(true);
+            const [isLoading, setIsLoading] = useState(false);
+            const [message, setMessage] = useState('');
+
+            const handleChange = (e) => {
+                const value = e.target.value;
+                // Solo permite números y un punto decimal
+                if (value === '' || /^\d*\.?\d*$/.test(value)) {
+                    setAmount(value);
+                }
+            };
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setMessage('');
+                if (!walletAddress) {
+                    setMessage("Por favor, conecta tu billetera primero.");
+                    return;
+                }
+                const numAmount = parseFloat(amount);
+                if (isNaN(numAmount) || numAmount <= 0) {
+                    setMessage("Ingresa una cantidad válida.");
+                    return;
+                }
+                if (numAmount > klvBalance) {
+                    setMessage(`Saldo insuficiente de KLV. Tienes ${klvBalance.toFixed(2)} KLV.`);
+                    return;
+                }
+
+                setIsLoading(true);
+                // La dirección del contrato/destino de la donación de Klever
+                const receiverAddress = "kth_80436d10c149d5c21f70691e3e7a08b671a53986"; 
+                
+                try {
+                    // Simulación de la función de envío de transacción global de wallet_connection.js
+                    if (window.sendKlvTransaction) {
+                        // Enviar la cantidad, el ID del token y la dirección de destino
+                        const txHash = await window.sendKlvTransaction(receiverAddress, KLV_TOKEN_ID, numAmount);
+                        setMessage(`¡Transacción exitosa! Hash: ${txHash}. Gracias por tu donación.`);
+                        setAmount('');
+                    } else {
+                        setMessage("Error: La función de transacción no está disponible (sendKlvTransaction).");
+                    }
+                } catch (error) {
+                    // Manejar errores de la billetera (ej. usuario cancela, falla la red)
+                    setMessage(`Error en la transacción: ${error.message || 'Algo salió mal. Inténtalo de nuevo.'}`);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            // Estilos Tailwind CSS para el widget
+            const baseClasses = "bg-white p-6 sm:p-8 rounded-xl shadow-2xl w-full max-w-sm sm:max-w-md";
+            const inputClasses = "w-full p-3 border border-gray-300 rounded-lg focus:ring-klv-blue focus:border-klv-blue transition duration-150";
+            const buttonClasses = "w-full py-3 rounded-lg text-white font-bold transition duration-300";
+
+            return (
+                <div className={baseClasses}>
+                    <h2 className="text-2xl font-extrabold text-klv-dark mb-4 text-center">
+                        Donar KLV a GlobalGive
+                    </h2>
+                    <p className="text-sm text-center text-gray-500 mb-6">
+                        Transfiere tokens KLV para apoyar la transparencia de la plataforma.
+                    </p>
+
+                    {/* Estado de la Conexión */}
+                    <div className={`p-3 mb-4 rounded-lg text-sm font-medium ${walletAddress ? 'bg-klv-green/10 text-klv-green' : 'bg-red-100 text-red-700'}`}>
+                        {walletAddress ? (
+                            `Conectado: ${walletAddress.substring(0, 10)}...${walletAddress.slice(-4)}`
+                        ) : (
+                            "Billetera desconectada."
+                        )}
+                    </div>
+                    
+                    {/* Saldo */}
+                    <div className="flex justify-between items-center mb-6 text-gray-700 font-semibold">
+                        <span>Tu Saldo KLV:</span>
+                        <span className="text-lg text-klv-blue">{klvBalance.toFixed(2)} KLV</span>
+                    </div>
+
+                    {/* Formulario de Transacción */}
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-4">
+                            <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">Cantidad (KLV)</label>
+                            <input
+                                id="amount"
+                                type="text"
+                                value={amount}
+                                onChange={handleChange}
+                                placeholder="Ejemplo: 100.5"
+                                className={inputClasses}
+                                disabled={!walletAddress || isLoading}
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            className={`${buttonClasses} ${!walletAddress || isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-klv-blue hover:bg-klv-blue/90'}`}
+                            disabled={!walletAddress || isLoading}
+                        >
+                            {isLoading ? (
+                                <span className="flex items-center justify-center">
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Enviando Transacción...
+                                </span>
+                            ) : (
+                                "Donar KLV Ahora"
+                            )}
+                        </button>
+                    </form>
+
+                    {/* Mensajes de estado */}
+                    {message && (
+                        <div className={`mt-4 p-3 rounded-lg text-sm ${message.startsWith('Error') ? 'bg-red-100 text-red-700' : 'bg-klv-green/10 text-klv-green'}`}>
+                            {message}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        // --------------------------------------------------------------------------------
+        // 3. Componente Raíz que enlaza el Hook y el Widget
+        // --------------------------------------------------------------------------------
+        const App = () => {
+            const { walletAddress, klvBalance, connectWallet } = useWalletConnection();
+            
+            // Si no está conectado, muestra un mensaje y el botón de conexión.
+            if (!walletAddress) {
+                return (
+                    <div className="bg-white p-10 rounded-xl shadow-2xl w-full max-w-sm sm:max-w-md text-center">
+                        <h2 className="text-2xl font-bold text-klv-blue mb-4">¡Conéctate para Donar!</h2>
+                        <p className="text-gray-600 mb-6">
+                            Necesitas conectar tu billetera Klever para realizar un intercambio o donación.
+                        </p>
+                        {/* El botón en el widget llama a la función del hook, que a su vez llama a la función global */}
+                        <button
+                            onClick={connectWallet}
+                            className="bg-klv-green hover:bg-klv-green/90 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md"
+                        >
+                            Conectar Billetera Klever
+                        </button>
+                    </div>
+                );
+            }
+
+            // Si está conectado, muestra el widget
+            return <DonationWidget walletAddress={walletAddress} klvBalance={klvBalance} />;
+        };
+
+        // Renderizar la aplicación React en el contenedor 'root'
+        const container = document.getElementById('root');
+        if (container) {
+             const root = ReactDOM.createRoot(container);
+             root.render(<App />);
+        }
+       
+    </script>
+{% endblock %}
